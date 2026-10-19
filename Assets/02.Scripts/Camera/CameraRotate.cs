@@ -14,6 +14,7 @@ public class FpsCameraRotate : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 
+        GameLogger.Log($"mouseY : {mouseY}");
         // 2. 마우스 입력만큼 회전값을 누적한다.
         float deltaTime = Time.deltaTime;
         _accumulationX += mouseX * _rotationSpeed * deltaTime;
