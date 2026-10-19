@@ -1,0 +1,26 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# 첫 번째 줄: 커밋 제목 형식 검사
+if ! head -n 1 "$1" | grep -qE '^(asset|design|build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.+\))?!?: .+'; then
+    echo "커밋 메시지 제목은 'type: 설명' 형식이어야 합니다."
+    exit 1
+fi
+
+# 제목을 제외하고, 빈 줄과 주석을 뺀 본문 줄 수 계산
+body_lines=$(awk '
+    NR > 1 && $0 !~ /^[[:space:]]*$/ && $0 !~ /^#/ {
+        count++
+    }
+    END {
+        print count + 0
+    }
+' "$1")
+
+# 본문 최소 1줄 검사
+if [ "$body_lines" -lt 1 ]; then
+    echo "커밋 메시지 본문은 빈 줄과 주석을 제외하고 1줄 이상 작성해야 합니다."
+    exit 1
+fi
+
+exit 0
