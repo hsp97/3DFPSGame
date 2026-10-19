@@ -18,7 +18,7 @@ public class CameraTPS : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y");
         _accumulationX += mouseX * _rotationSpeed * Time.deltaTime;
         _accumulationY += -mouseY * _rotationSpeed * Time.deltaTime;
-        _accumulationY = Mathf.Clamp(_accumulationY, -90f, 90f);
+        _accumulationY = Mathf.Clamp(_accumulationY, -90f, 50f);
 
         transform.position = _player.position + _targetOffset;
         transform.eulerAngles = new Vector3(_accumulationY, _accumulationX, 0f);
