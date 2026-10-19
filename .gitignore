@@ -74,6 +74,13 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+#Rider
+.idea
+.idea/**
+
 # Gemini CLI
 .gemini/
 gha-creds-*.json
+
+#Vsconfig
+.vsconfig
