@@ -3,7 +3,11 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
+    private const float GRAVITY = -20f;
+    private float _yVelocity = 0; // 위아래 속도, 매 프레임마다 중력 가속도가 붙는다.
+
     [SerializeField] private float _moveSpeed = 10f;
+    [SerializeField] private float _jumpPower = 12f;
     [SerializeField] private CharacterController _characterController;
 
     private void Awake()
@@ -23,8 +27,24 @@ public class PlayerMove : MonoBehaviour
         // 로컬 좌표계 : 한 대상을 중심
         // 월드 좌표계 : 세상을 중심
 
-        // 3. 방향과 속력에 따라 이동한다.
+        // 3. 중력을 누적한다.
+        if (!_characterController.isGrounded)
+        {
+            _yVelocity += GRAVITY * Time.deltaTime;
+        }
+
+        // 4. 점프키를 누르면 점프를 한다.
+        if (Input.GetButton("Jump") && _characterController.isGrounded)
+        {
+            _yVelocity = _jumpPower;
+        }
+
+        // 5. 속도를 구한다.
+        Vector3 velocity = direction * _moveSpeed;
+        velocity.y = _yVelocity;
+
+        // 6. 방향과 속력에 따라 이동한다.
         // transform.position += direction * _moveSpeed * Time.deltaTime;
-        _characterController.Move(direction * _moveSpeed * Time.deltaTime);
+        _characterController.Move(velocity * Time.deltaTime);
     }
 }
