@@ -11,8 +11,6 @@ public class CamearFPS : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 
-        GameLogger.Log($"mouseY : {mouseY}");
-
         float deltaTime = Time.deltaTime;
         _accumulationX += mouseX * _rotationSpeed * deltaTime;
         _accumulationY += -mouseY * _rotationSpeed * deltaTime;

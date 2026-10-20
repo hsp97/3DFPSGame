@@ -5,21 +5,34 @@ public class PlayerMove : MonoBehaviour
 {
     private const float GRAVITY = -20f;
     private const int MAXJUMPS = 2;
-    private float _yVelocity = 0; // 위아래 속도, 매 프레임마다 중력 가속도가 붙는다.
-    private int _jumpCount = 0;
+    private const float MAXSTAMINA = 100f;
 
+    private float _yVelocity = 0f; // 위아래 속도, 매 프레임마다 중력 가속도가 붙는다.
+    private int _jumpCount = 0;
+    private float _stamina = 0f;
+
+    [Header("스탯")]
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _sprintSpeed = 20f;
     [SerializeField] private float _jumpPower = 12f;
+    [SerializeField] private float _staminaRecovery = 15f;
+    [SerializeField] private float _sprintCost = 10f;
+    [SerializeField] private float _jumpCost = 20f;
+
+    [Header("컴포넌트")]
     [SerializeField] private CharacterController _characterController;
+
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _stamina = MAXSTAMINA;
     }
 
     private void Update()
     {
+        // 스태미너 회복
+        _stamina = Mathf.Min(MAXSTAMINA, _stamina + _staminaRecovery * Time.deltaTime);
         // 1. 키보드 방향을 받는다
         float h = Input.GetAxisRaw("Horizontal"); // -1, 0, 1
         float v = Input.GetAxisRaw("Vertical");
@@ -43,24 +56,28 @@ public class PlayerMove : MonoBehaviour
         }
 
         // 4. 점프키를 누르기 && 점프 카운트가 MAXJUMPS 이하라면 점프한다.
-        if (Input.GetButton("Jump") && _jumpCount < MAXJUMPS)
+        if (Input.GetButtonDown("Jump") && _jumpCount < MAXJUMPS && _stamina >= _jumpCost)
         {
             _yVelocity = _jumpPower;
             _jumpCount++;
+            _stamina -= _jumpCount;
         }
 
         // 5. 속도를 구한다.
-        float currentSpeed = Input.GetButton("Sprint") ? _sprintSpeed : _moveSpeed;
+        float requiredStamina = _sprintCost * Time.deltaTime;
+        bool wantSprint = Input.GetButton("Sprint") && _stamina > requiredStamina;
+        float currentSpeed = _moveSpeed;
+        if (wantSprint)
+        {
+            currentSpeed = _sprintSpeed;
+            _stamina -= requiredStamina;
+        }
+
         Vector3 velocity = direction * currentSpeed;
         velocity.y = _yVelocity;
 
         // 6. 방향과 속력에 따라 이동한다.
         // transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(velocity * Time.deltaTime);
-    }
-
-    private void Dash()
-    {
-        _moveSpeed = 12f;
     }
 }
