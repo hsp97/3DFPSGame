@@ -11,6 +11,9 @@ public class PlayerMove : MonoBehaviour
     private int _jumpCount = 0;
     private float _stamina = 0f;
 
+    private float _lastJumpPressedTime = float.NegativeInfinity; // 마지막 점프 입력 시각
+    private float _lastGroundedTime = float.NegativeInfinity; // 마지막 지상 밟은 시각
+
     [Header("스탯")]
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _sprintSpeed = 20f;
@@ -18,6 +21,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _staminaRecovery = 15f;
     [SerializeField] private float _sprintCost = 10f;
     [SerializeField] private float _jumpCost = 20f;
+
+    [SerializeField] private float _jumpBufferTime = 0.15f;
+    [SerializeField] private float _coyoteTime = 0.15f;
 
     [Header("컴포넌트")]
     [SerializeField] private CharacterController _characterController;
@@ -31,6 +37,13 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
+        // 점프 누른 순간 기록 
+        if (Input.GetButtonDown("Jump"))
+        {
+            _lastJumpPressedTime = Time.time;
+        }
+
+        bool isGrounded = _characterController.isGrounded;
         // 스태미너 회복
         _stamina = Mathf.Min(MAXSTAMINA, _stamina + _staminaRecovery * Time.deltaTime);
         // 1. 키보드 방향을 받는다
@@ -44,23 +57,43 @@ public class PlayerMove : MonoBehaviour
         // 월드 좌표계 : 세상을 중심
 
         // 3. 중력을 누적한다.
-        if (!_characterController.isGrounded)
+        if (!isGrounded)
         {
             _yVelocity += GRAVITY * Time.deltaTime;
         }
         else
         {
+            _lastGroundedTime = Time.time;
+
             // 땅에 서있으면 중력/점프 초기화
             _yVelocity = -1f;
             _jumpCount = 0;
         }
 
+        // 코요테 타임
+        bool canCoyoteJump = Time.time - _lastGroundedTime <= _coyoteTime;
+
+        // 입력이 점프 버퍼 시간 안에 있는지
+        bool hasBufferedJump = Time.time - _lastJumpPressedTime <= _jumpBufferTime;
+
         // 4. 점프키를 누르기 && 점프 카운트가 MAXJUMPS 이하라면 점프한다.
-        if (Input.GetButtonDown("Jump") && _jumpCount < MAXJUMPS && _stamina >= _jumpCost)
+        if (hasBufferedJump && _jumpCount < MAXJUMPS && _stamina >= _jumpCost)
         {
             _yVelocity = _jumpPower;
-            _jumpCount++;
-            _stamina -= _jumpCount;
+
+            if (!canCoyoteJump)
+            {
+                _jumpCount += 2;
+            }
+            else
+            {
+                _jumpCount++;
+            }
+
+            _stamina -= _jumpCost;
+
+            _lastJumpPressedTime = float.NegativeInfinity;
+            _lastGroundedTime = float.NegativeInfinity;
         }
 
         // 5. 속도를 구한다.
