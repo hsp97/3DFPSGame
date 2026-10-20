@@ -5,6 +5,7 @@ public class PlayerMove : MonoBehaviour
 {
     private const float GRAVITY = -20f;
     private float _yVelocity = 0; // 위아래 속도, 매 프레임마다 중력 가속도가 붙는다.
+    private bool _isDoubleJump = false;
 
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _jumpPower = 12f;
@@ -38,13 +39,28 @@ public class PlayerMove : MonoBehaviour
         {
             _yVelocity = _jumpPower;
         }
+        else
+        {
+            // 땅에 서있으면 중력 초기화
+            _yVelocity = 0f;
+        }
 
         // 5. 속도를 구한다.
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Dash();
+        }
+
         Vector3 velocity = direction * _moveSpeed;
         velocity.y = _yVelocity;
 
         // 6. 방향과 속력에 따라 이동한다.
         // transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(velocity * Time.deltaTime);
+    }
+
+    private void Dash()
+    {
+        _moveSpeed = 12f;
     }
 }
