@@ -1,24 +1,20 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(PlayerStats))]
 public class PlayerMove : MonoBehaviour
 {
     private const float GRAVITY = -20f;
     private const int MAXJUMPS = 2;
-    private const float MAXSTAMINA = 100f;
 
     private float _yVelocity = 0f; // 위아래 속도, 매 프레임마다 중력 가속도가 붙는다.
     private int _jumpCount = 0;
-    private float _stamina = 0f;
 
     private float _lastJumpPressedTime = float.NegativeInfinity; // 마지막 점프 입력 시각
     private float _lastGroundedTime = float.NegativeInfinity; // 마지막 지상 밟은 시각
 
     [Header("스탯")]
-    [SerializeField] private float _moveSpeed = 10f;
-    [SerializeField] private float _sprintSpeed = 20f;
-    [SerializeField] private float _jumpPower = 12f;
-    [SerializeField] private float _staminaRecovery = 15f;
     [SerializeField] private float _sprintCost = 10f;
     [SerializeField] private float _jumpCost = 20f;
 
@@ -26,13 +22,13 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float _coyoteTime = 0.15f;
 
     [Header("컴포넌트")]
-    [SerializeField] private CharacterController _characterController;
-
+    private CharacterController _characterController;
+    private PlayerStats _stats;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _stamina = MAXSTAMINA;
+        _stats = GetComponent<PlayerStats>();
     }
 
     private void Update()
@@ -44,8 +40,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         bool isGrounded = _characterController.isGrounded;
-        // 스태미너 회복
-        _stamina = Mathf.Min(MAXSTAMINA, _stamina + _staminaRecovery * Time.deltaTime);
+        // 스태미너 회복 => playerStats 에서 관리
         // 1. 키보드 방향을 받는다
         float h = Input.GetAxisRaw("Horizontal"); // -1, 0, 1
         float v = Input.GetAxisRaw("Vertical");
@@ -77,9 +72,9 @@ public class PlayerMove : MonoBehaviour
         bool hasBufferedJump = Time.time - _lastJumpPressedTime <= _jumpBufferTime;
 
         // 4. 점프키를 누르기 && 점프 카운트가 MAXJUMPS 이하라면 점프한다.
-        if (hasBufferedJump && _jumpCount < MAXJUMPS && _stamina >= _jumpCost)
+        if (hasBufferedJump && _jumpCount < MAXJUMPS && _stats.Stamina >= _jumpCost)
         {
-            _yVelocity = _jumpPower;
+            _yVelocity = _stats.JumpPower;
 
             if (!canCoyoteJump)
             {
@@ -90,7 +85,7 @@ public class PlayerMove : MonoBehaviour
                 _jumpCount++;
             }
 
-            _stamina -= _jumpCost;
+            _stats.Stamina -= _jumpCost;
 
             _lastJumpPressedTime = float.NegativeInfinity;
             _lastGroundedTime = float.NegativeInfinity;
@@ -98,12 +93,12 @@ public class PlayerMove : MonoBehaviour
 
         // 5. 속도를 구한다.
         float requiredStamina = _sprintCost * Time.deltaTime;
-        bool wantSprint = Input.GetButton("Sprint") && _stamina > requiredStamina;
-        float currentSpeed = _moveSpeed;
+        bool wantSprint = Input.GetButton("Sprint") && _stats.Stamina > requiredStamina;
+        float currentSpeed = _stats.MoveSpeed;
         if (wantSprint)
         {
-            currentSpeed = _sprintSpeed;
-            _stamina -= requiredStamina;
+            currentSpeed = _stats.SprintSpeed;
+            _stats.Stamina -= requiredStamina;
         }
 
         Vector3 velocity = direction * currentSpeed;

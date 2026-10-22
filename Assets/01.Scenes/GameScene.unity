@@ -1490,6 +1490,7 @@ GameObject:
   - component: {fileID: 1167947693}
   - component: {fileID: 1167947694}
   - component: {fileID: 1167947695}
+  - component: {fileID: 1167947696}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1597,15 +1598,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a91c95a212c7324a9e456d041f0c9dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
-  _moveSpeed: 10
-  _sprintSpeed: 20
-  _jumpPower: 12
-  _staminaRecovery: 15
   _sprintCost: 20
   _jumpCost: 20
   _jumpBufferTime: 0.15
   _coyoteTime: 0.15
-  _characterController: {fileID: 1167947693}
 --- !u!143 &1167947693
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1664,6 +1660,28 @@ MonoBehaviour:
   _firePoint: {fileID: 2015785248}
   _bombPrefab: {fileID: 64837993550276244, guid: 9a61cdad899c6ca44b785e76de4d9420, type: 3}
   _throwPower: 15
+--- !u!114 &1167947696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167947686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73b98e9b65accb74483ba1859adadfff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  MaxHealth: 100
+  Health: 0
+  HealthRegen: 0
+  MaxStamina: 100
+  Stamina: 0
+  StaminaRegen: 15
+  Damage: 10
+  MoveSpeed: 7
+  SprintSpeed: 15
+  JumpPower: 7
 --- !u!1 &1198020400
 GameObject:
   m_ObjectHideFlags: 0
@@ -2374,7 +2392,7 @@ MonoBehaviour:
   _attackInterval: 1.2
   _moveSpeed: 4
   _health: 100
-  _romingPoint: {x: 0, y: 0, z: 0}
+  _romingPoint: {fileID: 815090278}
 --- !u!1 &2000012627
 GameObject:
   m_ObjectHideFlags: 0
