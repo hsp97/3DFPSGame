@@ -1,8 +1,7 @@
 using System.Diagnostics;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-public class GameLogger : MonoBehaviour
+public static class GameLogger
 {
     [Conditional("ENABLE_LOG")]
     public static void Log(object message)
@@ -10,12 +9,12 @@ public class GameLogger : MonoBehaviour
         Debug.Log(message);
     }
 
-    public static void Info(object message)
+    public static void LogWarning(object message)
     {
         Debug.LogWarning(message);
     }
 
-    public static void Error(object message)
+    public static void LogError(object message)
     {
         Debug.LogError(message);
     }
