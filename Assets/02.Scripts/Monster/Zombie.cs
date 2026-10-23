@@ -20,7 +20,7 @@ public enum ZombieState
     Roaming, // 로밍 : 로밍상태 
 }
 
-public class Zombie : MonoBehaviour
+public class Zombie : MonoBehaviour, IDamageable
 {
     [Header("스탯")]
     [SerializeField] private float _detectDistance = 8; // 플레이어를 발견하는 거리
@@ -31,6 +31,9 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float _health = 100f;
 
     [SerializeField] private GameObject _romingPoint;
+
+    [Header("이펙트")]
+    [SerializeField] private GameObject _bloodSprayPrefab;
 
     private float _attackTimer = 0f;
     private CharacterController _controller;
@@ -80,19 +83,23 @@ public class Zombie : MonoBehaviour
     }
 
     // 대미지를 받는다.
-    public void TakeDamage(float damage)
+    public void TakeDamage(DamageInfo damageInfo)
     {
         if (_state == ZombieState.Death)
         {
             return;
         }
 
-        _health -= damage;
+        _health -= damageInfo.Value;
 
         StopAllCoroutines();
 
         if (_health > 0f)
         {
+            GameObject bloodSpray = Instantiate(_bloodSprayPrefab, transform);
+            bloodSpray.transform.position = damageInfo.HitPoint;
+            bloodSpray.transform.forward = damageInfo.HitNormal;
+
             ChangeState(ZombieState.Hit);
             // 잠깐 멈칫
             StartCoroutine(Hit_Corutine());
