@@ -25,12 +25,14 @@ public class Zombie : MonoBehaviour, IDamageable
     [Header("스탯")]
     [SerializeField] private float _detectDistance = 8; // 플레이어를 발견하는 거리
     [SerializeField] private float _comebackDistance = 15;
+    [SerializeField] private float _attackDamage = 10f;
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1.2f; // 공격 간격
     [SerializeField] private float _moveSpeed = 4;
     [SerializeField] private float _maxHealth = 100f;
     [SerializeField] private float _health = 100f;
     [SerializeField] private GameObject _romingPoint;
+
 
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
@@ -235,7 +237,11 @@ public class Zombie : MonoBehaviour, IDamageable
         if (_attackTimer >= _attackInterval)
         {
             // Todo. 플레이어 때림
-            Debug.Log("플레이어를 때렸습니다.");
+            DamageInfo damageInfo = new DamageInfo();
+            damageInfo.Value = _attackDamage;
+            damageInfo.HitPoint = _player.transform.position;
+            damageInfo.HitNormal = (transform.position - _player.transform.position).normalized;
+            _player.GetComponent<IDamageable>().TakeDamage(damageInfo);
             _attackTimer = 0;
         }
     }
