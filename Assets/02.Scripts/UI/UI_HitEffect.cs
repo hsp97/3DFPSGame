@@ -6,10 +6,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class UI_HitEffect : MonoBehaviour
 {
-    [SerializeField] private float _flashTime = 0.2f;
-
+    [SerializeField] private float _flashTime = 0.1f;
+    [SerializeField] private float _fadeTime = 0.3f;
     private Image _image;
-    private float _fadeDuration = 0.8f;
 
     private void Awake()
     {
@@ -19,30 +18,36 @@ public class UI_HitEffect : MonoBehaviour
 
     public void Flash(float alpha)
     {
-        Color color = _image.color;
-        color.a = alpha;
-        _image.color = color;
-        StartCoroutine(Flash_Coroutine(alpha));
+        SetAlpha(alpha);
+        StartCoroutine(Flash_Coroutine());
     }
 
-    private IEnumerator Flash_Coroutine(float alpha)
+    private IEnumerator Flash_Coroutine()
     {
         _image.enabled = true;
-        yield return StartCoroutine(Fade_Coroutine(alpha));
+        yield return new WaitForSeconds(_flashTime);
+        yield return Fade_Coroutine();
         _image.enabled = false;
     }
 
-    private IEnumerator Fade_Coroutine(float alpha)
+    private IEnumerator Fade_Coroutine()
     {
         float time = 0f;
-        while (time < _fadeDuration)
+        float startAlpha = _image.color.a;
+        while (time < _fadeTime)
         {
+            float alpha = Mathf.Lerp(startAlpha, 0f, time / _fadeTime);
             time += Time.deltaTime;
-            Color color = _image.color;
-            color.a = Mathf.Lerp(alpha, 0f, time / _fadeDuration);
-            _image.color = color;
+            SetAlpha(alpha);
 
             yield return null;
         }
+    }
+
+    private void SetAlpha(float alpha)
+    {
+        Color color = _image.color;
+        color.a = alpha;
+        _image.color = color;
     }
 }
