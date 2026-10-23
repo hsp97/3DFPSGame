@@ -33,6 +33,11 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing)
+        {
+            return;
+        }
+
         // 점프 누른 순간 기록 
         if (Input.GetButtonDown("Jump"))
         {

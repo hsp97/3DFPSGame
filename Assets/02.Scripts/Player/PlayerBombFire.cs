@@ -9,6 +9,10 @@ public class PlayerBombFire : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing)
+        {
+            return;
+        }
         // 1. G키 입력 받기 (카메라 우클릭과 분리)
         if (Input.GetKeyDown(KeyCode.G))
         {
