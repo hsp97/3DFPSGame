@@ -1266,7 +1266,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC900\uBE44"
+  m_text: "\uC900\uBE44 \uC937"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4a106098a8cfb5347b88bdf39bc33811, type: 2}
   m_sharedMaterial: {fileID: 6500571712155178879, guid: 4a106098a8cfb5347b88bdf39bc33811, type: 2}
@@ -3511,6 +3511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98eef5dd6c34dab4983b6133942d0454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  _stateText: {fileID: 668180355}
 --- !u!4 &2125827251
 Transform:
   m_ObjectHideFlags: 0
