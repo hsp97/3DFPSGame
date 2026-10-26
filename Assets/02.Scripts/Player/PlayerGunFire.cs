@@ -120,11 +120,6 @@ public class PlayerGunFire : MonoBehaviour
         // 4. 레이를 발사하고, 만일 부딛힌 물체가 있다면 이펙트 표시하기
         bool isHit = Physics.Raycast(ray, out hitInfo, _range);
 
-        // 5. 총구에서 맞은 지점까지 궤적 그리기 (안 맞았으면 사거리 끝까지)
-        Vector3 endPoint = isHit ? hitInfo.point : ray.origin + ray.direction * _range;
-        PlayerBulletTrail trail = _trailPool.Get();
-        trail.Show(_muzzle.position, endPoint);
-
         if (isHit)
         {
             // Debug.Log($"{hitInfo.collider.name}이 총알을 맞았다. 대미지: {_damage}");
@@ -145,5 +140,10 @@ public class PlayerGunFire : MonoBehaviour
                 damageable.TakeDamage(damageInfo);
             }
         }
+
+        // 5. 총구에서 맞은 지점까지 궤적 그리기 (안 맞았으면 사거리 끝까지)
+        Vector3 endPoint = isHit ? hitInfo.point : ray.origin + ray.direction * _range;
+        PlayerBulletTrail trail = _trailPool.Get();
+        trail.Show(_muzzle.position, endPoint);
     }
 }
