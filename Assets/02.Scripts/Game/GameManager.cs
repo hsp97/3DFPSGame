@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _stateText;
 
+
     private void Awake()
     {
         if (_instance != null)

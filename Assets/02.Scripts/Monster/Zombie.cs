@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AdaptivePerformance.Provider;
@@ -42,6 +43,9 @@ public class Zombie : MonoBehaviour, IDamageable
     private Vector3 _startPosition;
     private GameObject _player;
     private ZombieState _state = ZombieState.Idle;
+
+    public event Action OnDamaged;
+    public event Action OnDied;
 
     public float Health
     {
@@ -111,6 +115,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
         StopAllCoroutines();
 
+        OnDamaged?.Invoke();
+
         if (_health > 0f)
         {
             GameObject bloodSpray = Instantiate(_bloodSprayPrefab, transform);
@@ -124,6 +130,7 @@ public class Zombie : MonoBehaviour, IDamageable
         else
         {
             ChangeState(ZombieState.Death);
+            OnDied?.Invoke();
             StartCoroutine(Death_Corutine());
         }
     }
@@ -249,4 +256,5 @@ public class Zombie : MonoBehaviour, IDamageable
             _attackTimer = 0;
         }
     }
+
 }
