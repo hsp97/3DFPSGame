@@ -1,12 +1,13 @@
+using System;
 using UnityEngine;
+using Object = System.Object;
 
 public class Player : MonoBehaviour, IDamageable
 {
     private PlayerStats _stats;
 
-    [SerializeField] private UI_HitEffect _uiHitEffect;
-
-    [SerializeField] private float _alpha = 1f;
+    // Action 자료형 : 함수(들)을 저장할 수 있다.
+    public event Action OnDamaged;
     private void Start()
     {
         _stats = GetComponent<PlayerStats>();
@@ -15,9 +16,11 @@ public class Player : MonoBehaviour, IDamageable
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (_stats.Health <= 0) return;
+
         _stats.Health -= damageInfo.Value;
-        _uiHitEffect.Flash(_alpha);
-        Debug.Log($"플레이어 맞음. 대미지 {damageInfo.Value}, 남은체력 {_stats.Health}");
+
+        OnDamaged?.Invoke();
+
         if (_stats.Health <= 0f)
         {
             Debug.Log("플레이어 죽음");

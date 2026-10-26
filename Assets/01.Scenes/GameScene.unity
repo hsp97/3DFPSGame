@@ -2905,8 +2905,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 153dcf30a342db948a06d6e52b1fe3ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  _uiHitEffect: {fileID: 1638796864}
-  _alpha: 1
 --- !u!1 &1198020400
 GameObject:
   m_ObjectHideFlags: 0
@@ -3571,6 +3569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_HitEffect
   _flashTime: 0.1
   _fadeTime: 0.3
+  _alpha: 1
 --- !u!1 &1702829561
 GameObject:
   m_ObjectHideFlags: 0
@@ -3803,6 +3802,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MinimapCamera
   _target: {fileID: 1167947690}
   _height: 8
+  _zoomStep: 1
+  _minSize: 3
+  _maxSize: 20
 --- !u!1 &1728943864
 GameObject:
   m_ObjectHideFlags: 0
@@ -4209,6 +4211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_PlayerStats
   _healthSlider: {fileID: 230699985}
   _staminaSlider: {fileID: 1702829563}
+  _player: {fileID: 1167947697}
   _playerStats: {fileID: 1167947696}
 --- !u!1 &2000012627
 GameObject:

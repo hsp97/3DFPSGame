@@ -8,12 +8,27 @@ public class UI_HitEffect : MonoBehaviour
 {
     [SerializeField] private float _flashTime = 0.1f;
     [SerializeField] private float _fadeTime = 0.3f;
+    [SerializeField] private float _alpha = 1f;
     private Image _image;
 
     private void Awake()
     {
         _image = GetComponent<Image>();
         _image.enabled = false;
+    }
+
+    private void Start()
+    {
+        Player player = GameObject.FindAnyObjectByType<Player>();
+        if (player != null)
+        {
+            player.OnDamaged += OnPlayerDamaged;
+        }
+    }
+
+    private void OnPlayerDamaged()
+    {
+        Flash(_alpha);
     }
 
     public void Flash(float alpha)
