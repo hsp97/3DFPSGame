@@ -45,7 +45,7 @@ public class Zombie : MonoBehaviour, IDamageable
     private ZombieState _state = ZombieState.Idle;
 
     public event Action OnDamaged;
-    public event Action OnDied;
+    public event Action<Zombie> OnDied;
 
     public float Health
     {
@@ -63,6 +63,12 @@ public class Zombie : MonoBehaviour, IDamageable
         _controller = GetComponent<CharacterController>();
         _startPosition = transform.position;
         _player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    // 스포너가 생성 직후 호출한다. 프리팹은 씬의 로밍 지점을 참조할 수 없기 때문이다.
+    public void SetRoamingPoint(GameObject roamingPoint)
+    {
+        _romingPoint = roamingPoint;
     }
 
     private void Update()
@@ -130,7 +136,7 @@ public class Zombie : MonoBehaviour, IDamageable
         else
         {
             ChangeState(ZombieState.Death);
-            OnDied?.Invoke();
+            OnDied?.Invoke(this);
             StartCoroutine(Death_Corutine());
         }
     }

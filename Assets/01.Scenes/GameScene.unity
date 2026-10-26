@@ -3417,6 +3417,57 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8740119705318771941, guid: 76418b1a64d73d14d943d9406fc47d90, type: 3}
   m_PrefabInstance: {fileID: 8369365790397458026}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1394549692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1394549694}
+  - component: {fileID: 1394549693}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1394549693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394549692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b21c3fe291553b547a03044a0c727ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ZombieSpawner
+  _zombiePrefab: {fileID: 1552732242607302994, guid: cf4b3cf2588412a45953c3d4a5a0a698, type: 3}
+  _spawnPoints:
+  - {fileID: 1394549694}
+  _roamingPoint: {fileID: 815090278}
+  _zombieManager: {fileID: 477044463}
+  _spawnInterval: 3
+  _maxZombieCount: 10
+--- !u!4 &1394549694
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394549692}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2, y: 1, z: 12.37}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1458815260
 GameObject:
   m_ObjectHideFlags: 0
@@ -5106,6 +5157,7 @@ SceneRoots:
   - {fileID: 186414268}
   - {fileID: 793786717700556369}
   - {fileID: 815090279}
+  - {fileID: 1394549694}
   - {fileID: 1217444883}
   - {fileID: 1233411373}
   - {fileID: 1553809270}
