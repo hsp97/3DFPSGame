@@ -18,6 +18,8 @@ public class ZombieHealthBar : MonoBehaviour
         if (_zombie != null)
         {
             _zombie.OnDamaged += RefreshHealth;
+            // 풀에서 재사용될 때 이전 생의 체력바가 남지 않게 다시 채운다.
+            _zombie.OnSpawned += RefreshHealth;
         }
     }
 

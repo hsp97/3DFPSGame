@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 // FSM(유한 상태 머신) : 유한개의 상태가 있고, 상태마다 행동을 다르게 함으로써 AI를 구현하는 유명한 방법
 // - "상태" : 객체가 가질 수 있는 어떤 조건이나 상황
@@ -46,6 +47,7 @@ public class Zombie : MonoBehaviour, IDamageable
     private IZombieState _currentState;
 
     public event Action OnDamaged;
+    public event Action OnSpawned; // 풀에서 꺼내져 다시 등장할 때
     public event Action<Zombie> OnDied;
 
     public float Health
@@ -67,8 +69,20 @@ public class Zombie : MonoBehaviour, IDamageable
     public Vector3 PlayerPosition => _player.transform.position;
     public Vector3 RoamingPosition => _romingPoint.transform.position;
 
+    private IObjectPool<Zombie> _pool;
+
+    // 풀에서 생성될 때 한 번 호출된다. 사라질 때 이 풀로 돌아간다.
+    public void SetPool(IObjectPool<Zombie> pool)
+    {
+        _pool = pool;
+    }
+
+    // 풀에서 처음 생성되면 Start보다 Spawn이 먼저 호출되므로, 컴포넌트 참조는 Awake에서 가져온다.
     private void Awake()
     {
+        _controller = GetComponent<CharacterController>();
+        _player = GameObject.FindGameObjectWithTag("Player");
+
         _states = new Dictionary<ZombieState, IZombieState>
         {
             { ZombieState.Idle, new ZombieIdleState(this) },
@@ -83,19 +97,36 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        _health = _maxHealth;
-        _controller = GetComponent<CharacterController>();
-        _startPosition = transform.position;
-        _player = GameObject.FindGameObjectWithTag("Player");
-
-        _currentState = _states[_state];
-        _currentState.Enter();
+        // 씬에 배치된 좀비만 여기서 초기화한다. 스폰된 좀비는 Spawn에서 이미 초기화했다.
+        if (_currentState == null)
+        {
+            ResetStatus();
+        }
     }
 
-    // 스포너가 생성 직후 호출한다. 프리팹은 씬의 로밍 지점을 참조할 수 없기 때문이다.
-    public void SetRoamingPoint(GameObject roamingPoint)
+    // 스포너가 풀에서 꺼낸 직후 호출한다.
+    // 프리팹은 씬의 로밍 지점을 참조할 수 없으므로 여기서 넘겨받는다.
+    public void Spawn(Vector3 position, Quaternion rotation, GameObject roamingPoint)
     {
+        // CharacterController가 켜져 있으면 위치 변경이 무시될 수 있으므로 끈 상태에서 옮긴다.
+        _controller.enabled = false;
+        transform.SetPositionAndRotation(position, rotation);
+        _controller.enabled = true;
+
         _romingPoint = roamingPoint;
+        ResetStatus();
+        OnSpawned?.Invoke();
+    }
+
+    // 재사용될 때 이전 생의 체력, 상태, 시작 위치가 남지 않도록 처음 상태로 되돌린다.
+    private void ResetStatus()
+    {
+        _health = _maxHealth;
+        _startPosition = transform.position;
+
+        _state = ZombieState.Idle;
+        _currentState = _states[_state];
+        _currentState.Enter();
     }
 
     private void Update()
@@ -179,8 +210,16 @@ public class Zombie : MonoBehaviour, IDamageable
         _controller.enabled = false;
     }
 
+    // 풀에서 나온 좀비는 반납하고, 씬에 배치된 좀비는 파괴한다.
     public void Despawn()
     {
-        Destroy(gameObject);
+        if (_pool != null)
+        {
+            _pool.Release(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
