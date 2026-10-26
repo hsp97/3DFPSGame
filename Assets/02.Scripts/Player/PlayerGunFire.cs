@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Pool;
 
 
 // 마우스 왼쪽 버튼을 누르면 바라보는 방향으로 총알을 발사하고 싶다.
@@ -14,14 +15,42 @@ public class PlayerGunFire : MonoBehaviour
     [SerializeField] private float _damage = 10f; // 공격력
     [SerializeField] private float _fireInterval = 0.1f; // 발사 속도
 
+    [Header("총알 궤적")]
+    [SerializeField] private Transform _muzzle; // 총구 위치
+    [SerializeField] private PlayerBulletTrail _trailPrefab;
+    [SerializeField] private Transform _trailParent; // 생성된 궤적을 모아둘 부모 오브젝트
+    [SerializeField] private int _trailDefaultCapacity = 10; // 처음에 준비할 리스트 크기
+    [SerializeField] private int _trailMaxPoolSize = 30; // 풀에 보관할 최대 개수, 넘치면 파괴한다.
+
     private float _fireTimer = 0f;
     private int _bulletCount = 0;
     private Coroutine _reloadCoroutine = null;
 
+    private ObjectPool<PlayerBulletTrail> _trailPool;
+
+    private void Awake()
+    {
+        _trailPool = new ObjectPool<PlayerBulletTrail>(
+            createFunc: CreateTrail,
+            actionOnGet: trail => trail.gameObject.SetActive(true),
+            actionOnRelease: trail => trail.gameObject.SetActive(false),
+            actionOnDestroy: trail => Destroy(trail.gameObject),
+            collectionCheck: true,
+            defaultCapacity: _trailDefaultCapacity,
+            maxSize: _trailMaxPoolSize);
+    }
 
     private void Start()
     {
         _bulletCount = _maxBulletCount;
+    }
+
+    // 풀에 남은 궤적이 없을 때만 호출된다.
+    private PlayerBulletTrail CreateTrail()
+    {
+        PlayerBulletTrail trail = Instantiate(_trailPrefab, _trailParent);
+        trail.SetPool(_trailPool);
+        return trail;
     }
 
 
@@ -90,6 +119,12 @@ public class PlayerGunFire : MonoBehaviour
 
         // 4. 레이를 발사하고, 만일 부딛힌 물체가 있다면 이펙트 표시하기
         bool isHit = Physics.Raycast(ray, out hitInfo, _range);
+
+        // 5. 총구에서 맞은 지점까지 궤적 그리기 (안 맞았으면 사거리 끝까지)
+        Vector3 endPoint = isHit ? hitInfo.point : ray.origin + ray.direction * _range;
+        PlayerBulletTrail trail = _trailPool.Get();
+        trail.Show(_muzzle.position, endPoint);
+
         if (isHit)
         {
             // Debug.Log($"{hitInfo.collider.name}이 총알을 맞았다. 대미지: {_damage}");
