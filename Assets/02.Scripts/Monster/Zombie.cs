@@ -1,13 +1,12 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AdaptivePerformance.Provider;
-using UnityEngine.UIElements;
 
 // FSM(유한 상태 머신) : 유한개의 상태가 있고, 상태마다 행동을 다르게 함으로써 AI를 구현하는 유명한 방법
 // - "상태" : 객체가 가질 수 있는 어떤 조건이나 상황
 // - "전이" : 조건에 따라 현재 상태에서 다른 상태로 넘어가는 것
 // - 그리고 위 방식에 따라 규칙을 세워둔 것을 "머신"
+// 상태별 행동은 States 폴더의 상태 클래스가 담당하고, Zombie는 데이터와 공용 기능, 상태 전환만 맡는다.
 
 // 좀비의 가실 수 있는 상태
 public enum ZombieState
@@ -18,7 +17,7 @@ public enum ZombieState
     Attack, // 공격 : 일정 시간마다 플레이어를 공격한다.
     Hit, // 피격 : 공격을 받아 잠깐 멈칫한다.
     Death, // 죽음 : 쓰러지고 잠시 뒤 사라진다.
-    Roaming, // 로밍 : 로밍상태 
+    Roaming, // 로밍 : 로밍 지점으로 이동한다.
 }
 
 public class Zombie : MonoBehaviour, IDamageable
@@ -38,11 +37,13 @@ public class Zombie : MonoBehaviour, IDamageable
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
 
-    private float _attackTimer = 0f;
     private CharacterController _controller;
     private Vector3 _startPosition;
     private GameObject _player;
+
     private ZombieState _state = ZombieState.Idle;
+    private Dictionary<ZombieState, IZombieState> _states;
+    private IZombieState _currentState;
 
     public event Action OnDamaged;
     public event Action<Zombie> OnDied;
@@ -57,12 +58,38 @@ public class Zombie : MonoBehaviour, IDamageable
         get => _maxHealth;
     }
 
+    public float DetectDistance => _detectDistance;
+    public float ComebackDistance => _comebackDistance;
+    public float AttackRange => _attackRange;
+    public float AttackInterval => _attackInterval;
+
+    public Vector3 StartPosition => _startPosition;
+    public Vector3 PlayerPosition => _player.transform.position;
+    public Vector3 RoamingPosition => _romingPoint.transform.position;
+
+    private void Awake()
+    {
+        _states = new Dictionary<ZombieState, IZombieState>
+        {
+            { ZombieState.Idle, new ZombieIdleState(this) },
+            { ZombieState.Roaming, new ZombieRoamingState(this) },
+            { ZombieState.Trace, new ZombieTraceState(this) },
+            { ZombieState.Comeback, new ZombieComebackState(this) },
+            { ZombieState.Attack, new ZombieAttackState(this) },
+            { ZombieState.Hit, new ZombieHitState(this) },
+            { ZombieState.Death, new ZombieDeathState(this) },
+        };
+    }
+
     private void Start()
     {
         _health = _maxHealth;
         _controller = GetComponent<CharacterController>();
         _startPosition = transform.position;
         _player = GameObject.FindGameObjectWithTag("Player");
+
+        _currentState = _states[_state];
+        _currentState.Enter();
     }
 
     // 스포너가 생성 직후 호출한다. 프리팹은 씬의 로밍 지점을 참조할 수 없기 때문이다.
@@ -77,36 +104,8 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             return;
         }
-        switch (_state)
-        {
-            case ZombieState.Idle:
-                {
-                    // Todo. 대기 : 제자리에서 플레이어를 기다린다.
-                    Idle();
-                    break;
-                }
-            case ZombieState.Trace:
-                {
-                    // Todo. 추격 : 플레이어를 쫓아간다.
-                    Trace();
-                    break;
-                }
-            case ZombieState.Comeback:
-                {
-                    Comeback();
-                    break;
-                }
-            case ZombieState.Attack:
-                {
-                    Attack();
-                    break;
-                }
-            case ZombieState.Roaming:
-                {
-                    Roaming();
-                    break;
-                }
-        }
+
+        _currentState.Execute();
     }
 
     // 대미지를 받는다.
@@ -119,8 +118,6 @@ public class Zombie : MonoBehaviour, IDamageable
 
         _health -= damageInfo.Value;
 
-        StopAllCoroutines();
-
         OnDamaged?.Invoke();
 
         if (_health > 0f)
@@ -129,96 +126,37 @@ public class Zombie : MonoBehaviour, IDamageable
             bloodSpray.transform.position = damageInfo.HitPoint;
             bloodSpray.transform.forward = damageInfo.HitNormal;
 
-            ChangeState(ZombieState.Hit);
             // 잠깐 멈칫
-            StartCoroutine(Hit_Corutine());
+            ChangeState(ZombieState.Hit);
         }
         else
         {
             ChangeState(ZombieState.Death);
             OnDied?.Invoke(this);
-            StartCoroutine(Death_Corutine());
         }
     }
 
-    private IEnumerator Hit_Corutine()
-    {
-        yield return new WaitForSeconds(0.2f);
-        ChangeState(ZombieState.Trace);
-    }
-
-    private IEnumerator Death_Corutine()
-    {
-        _controller.enabled = false;
-        yield return new WaitForSeconds(0.5f);
-        Destroy(gameObject);
-    }
-
-    private void ChangeState(ZombieState nextState)
+    public void ChangeState(ZombieState nextState)
     {
         Debug.Log($"{name}: {_state} -> {nextState}");
+
+        _currentState?.Exit();
         _state = nextState;
+        _currentState = _states[nextState];
+        _currentState.Enter();
     }
 
+    // 아래는 상태들이 같이 쓰는 기능이다.
 
-    private void Idle()
+    public float DistanceTo(Vector3 position)
     {
-        // 대기 : 제자리에서 플레이어를 기다린다.
-        float distance = Vector3.Distance(transform.position, _player.transform.position);
-
-        // 패트롤 : 특정 포인트를 왔다갔다 한다.
-        if (distance > _detectDistance)
-        {
-            ChangeState(ZombieState.Roaming);
-        }
-
-        // 플레이어 가까워지면 Trace 상태로 전이
-        if (distance <= _detectDistance)
-        {
-            ChangeState(ZombieState.Trace);
-        }
+        return Vector3.Distance(transform.position, position);
     }
 
-    public void Roaming()
+    // 목표 지점을 바라보며 수평으로 이동한다.
+    public void MoveTo(Vector3 target)
     {
-        Vector3 direction = _romingPoint.transform.position - transform.position;
-        direction.y = 0f;
-        direction.Normalize();
-
-        transform.forward = direction;
-        _controller.SimpleMove(direction * _moveSpeed);
-        float distance = Vector3.Distance(transform.position, _player.transform.position);
-
-        if (distance <= _detectDistance)
-        {
-            ChangeState(ZombieState.Trace);
-            return;
-        }
-
-        if (Vector3.Distance(transform.position, _romingPoint.transform.position) <= 1f)
-        {
-            ChangeState(ZombieState.Comeback);
-        }
-    }
-
-    private void Trace()
-    {
-        // Todo. run 애니메이션 실행
-        // 처음 자리에서 너무 멀어지면 돌아간다.
-        if (Vector3.Distance(transform.position, _startPosition) > _comebackDistance)
-        {
-            ChangeState(ZombieState.Comeback);
-            return;
-        }
-
-        if (Vector3.Distance(transform.position, _player.transform.position) <= _attackRange)
-        {
-            _attackTimer = 0f;
-            ChangeState(ZombieState.Attack);
-            return;
-        }
-
-        Vector3 direction = _player.transform.position - transform.position;
+        Vector3 direction = target - transform.position;
         direction.y = 0f;
         direction.Normalize();
 
@@ -226,41 +164,23 @@ public class Zombie : MonoBehaviour, IDamageable
         _controller.SimpleMove(direction * _moveSpeed);
     }
 
-    private void Comeback()
+    public void AttackPlayer()
     {
-        if (Vector3.Distance(transform.position, _startPosition) <= 1f)
-        {
-            ChangeState(ZombieState.Idle);
-            return;
-        }
-
-        Vector3 direction = _startPosition - transform.position;
-        direction.y = 0f;
-        direction.Normalize();
-        transform.forward = direction;
-        _controller.SimpleMove(direction * _moveSpeed);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.Value = _attackDamage;
+        damageInfo.HitPoint = PlayerPosition;
+        damageInfo.HitNormal = (transform.position - PlayerPosition).normalized;
+        _player.GetComponent<IDamageable>().TakeDamage(damageInfo);
     }
 
-    private void Attack()
+    // 죽은 뒤 더 이상 충돌하거나 밀리지 않게 한다.
+    public void DisableCollision()
     {
-        float distance = Vector3.Distance(transform.position, _player.transform.position);
-        if (distance > _attackRange)
-        {
-            ChangeState(ZombieState.Trace);
-            return;
-        }
-
-        _attackTimer += Time.deltaTime;
-        if (_attackTimer >= _attackInterval)
-        {
-            // Todo. 플레이어 때림
-            DamageInfo damageInfo = new DamageInfo();
-            damageInfo.Value = _attackDamage;
-            damageInfo.HitPoint = _player.transform.position;
-            damageInfo.HitNormal = (transform.position - _player.transform.position).normalized;
-            _player.GetComponent<IDamageable>().TakeDamage(damageInfo);
-            _attackTimer = 0;
-        }
+        _controller.enabled = false;
     }
 
+    public void Despawn()
+    {
+        Destroy(gameObject);
+    }
 }
