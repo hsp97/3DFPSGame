@@ -6,6 +6,25 @@ public class MinimapCamera : MonoBehaviour
     [SerializeField] private Transform _target;
     [SerializeField] private float _height = 8f;
 
+    private Camera _camera;
+
+    private void Start()
+    {
+        _camera = GetComponent<Camera>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            _camera.orthographicSize -= 1;
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            _camera.orthographicSize += 1;
+        }
+    }
+
     private void LateUpdate()
     {
         // 1. 대상의 머리위로 위치를 옮긴다.
