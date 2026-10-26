@@ -10,6 +10,7 @@ public class UI_HitEffect : MonoBehaviour
     [SerializeField] private float _fadeTime = 0.3f;
     [SerializeField] private float _alpha = 1f;
     private Image _image;
+    private Player _player;
 
     private void Awake()
     {
@@ -19,10 +20,18 @@ public class UI_HitEffect : MonoBehaviour
 
     private void Start()
     {
-        Player player = GameObject.FindAnyObjectByType<Player>();
-        if (player != null)
+        _player = GameObject.FindAnyObjectByType<Player>();
+        if (_player != null)
         {
-            player.OnDamaged += OnPlayerDamaged;
+            _player.OnDamaged += OnPlayerDamaged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_player != null)
+        {
+            _player.OnDamaged -= OnPlayerDamaged;
         }
     }
 

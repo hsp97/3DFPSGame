@@ -13,6 +13,14 @@ public class UI_PlayerStats : MonoBehaviour
         _player.OnDamaged += RefreshHealth;
     }
 
+    private void OnDestroy()
+    {
+        if (_player != null)
+        {
+            _player.OnDamaged -= RefreshHealth;
+        }
+    }
+
     // 업데이트가 초당 60회 이상은 실행된다.
     private void LateUpdate()
     {
