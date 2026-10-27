@@ -16,13 +16,13 @@ public class ZombieDeathState : IZombieState
     public void Enter()
     {
         _timer = 0f;
+        _zombie.SetTrigger("Death");
         _zombie.DisableCollision();
     }
 
     public void Execute()
     {
         _timer += Time.deltaTime;
-        _zombie.SetTrigger("Death");
         if (_timer >= DespawnDelay)
         {
             _zombie.Despawn();

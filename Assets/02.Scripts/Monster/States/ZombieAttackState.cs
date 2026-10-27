@@ -13,7 +13,8 @@ public class ZombieAttackState : IZombieState
 
     public void Enter()
     {
-        _attackTimer = 0f;
+        // 붙자마자 첫 공격이 나가도록 타이머를 공격 간격만큼 채운 상태로 시작한다.
+        _attackTimer = _zombie.AttackInterval;
         _zombie.SetTrigger("MoveToAttackDelay");
     }
 
