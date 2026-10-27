@@ -18,6 +18,7 @@ public class ZombieComebackState : IZombieState
     {
         if (_zombie.HasArrived)
         {
+            _zombie.SetTrigger("MoveToIdle");
             _zombie.ChangeState(ZombieState.Idle);
         }
     }

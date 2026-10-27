@@ -10,7 +10,7 @@ public class ZombieTraceState : IZombieState
 
     public void Enter()
     {
-        // Todo. run 애니메이션 실행
+        // 이동 애니메이션은 들어오기 전 상태(Idle, Attack)가 이미 트리거를 걸어두므로 여기서는 걸지 않는다.
     }
 
     public void Execute()

@@ -16,6 +16,9 @@ public class ZombieIdleState : IZombieState
 
     public void Execute()
     {
+        // 대기는 한 프레임만 머물고 바로 이동 상태로 넘어간다.
+        _zombie.SetTrigger("IdleToMove");
+
         // 플레이어가 가까워지면 추격, 멀리 있으면 로밍한다.
         if (_zombie.DistanceTo(_zombie.PlayerPosition) <= _zombie.DetectDistance)
         {

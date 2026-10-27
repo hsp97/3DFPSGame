@@ -44,6 +44,7 @@ public class Zombie : MonoBehaviour, IDamageable
     private GameObject _player;
     private NavMeshAgent _agent;
     private Collider _collider;
+    private Animator _animator;
 
     private ZombieState _state = ZombieState.Idle;
     private Dictionary<ZombieState, IZombieState> _states;
@@ -103,6 +104,7 @@ public class Zombie : MonoBehaviour, IDamageable
         _agent.speed = _moveSpeed;
 
         _collider = GetComponent<Collider>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Start()
@@ -209,7 +211,7 @@ public class Zombie : MonoBehaviour, IDamageable
         _agent.SetDestination(target);
     }
 
-    public void AttackPlayer()
+    public void AttackAction()
     {
         StopAgent();
 
@@ -227,6 +229,11 @@ public class Zombie : MonoBehaviour, IDamageable
 
         _agent.ResetPath(); // agent의 목적지 리셋
         _agent.velocity = Vector3.zero; // 미끄럼 방지를 위해 가속도 0으로
+    }
+
+    public void SetTrigger(string trigger)
+    {
+        _animator.SetTrigger(trigger);
     }
 
     // 죽은 뒤 더 이상 충돌하거나 밀리지 않게 한다.

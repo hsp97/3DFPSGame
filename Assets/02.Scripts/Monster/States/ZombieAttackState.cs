@@ -14,12 +14,14 @@ public class ZombieAttackState : IZombieState
     public void Enter()
     {
         _attackTimer = 0f;
+        _zombie.SetTrigger("MoveToAttackDelay");
     }
 
     public void Execute()
     {
         if (_zombie.DistanceTo(_zombie.PlayerPosition) > _zombie.AttackRange)
         {
+            _zombie.SetTrigger("AttackMove");
             _zombie.ChangeState(ZombieState.Trace);
             return;
         }
@@ -27,7 +29,7 @@ public class ZombieAttackState : IZombieState
         _attackTimer += Time.deltaTime;
         if (_attackTimer >= _zombie.AttackInterval)
         {
-            _zombie.AttackPlayer();
+            _zombie.SetTrigger("StartAttack");
             _attackTimer = 0f;
         }
     }
