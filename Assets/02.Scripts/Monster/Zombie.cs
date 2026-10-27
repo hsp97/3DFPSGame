@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Pool;
 
 // FSM(유한 상태 머신) : 유한개의 상태가 있고, 상태마다 행동을 다르게 함으로써 AI를 구현하는 유명한 방법
@@ -21,6 +22,7 @@ public enum ZombieState
     Roaming, // 로밍 : 로밍 지점으로 이동한다.
 }
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class Zombie : MonoBehaviour, IDamageable
 {
     [Header("스탯")]
@@ -38,9 +40,10 @@ public class Zombie : MonoBehaviour, IDamageable
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
 
-    private CharacterController _controller;
     private Vector3 _startPosition;
     private GameObject _player;
+    private NavMeshAgent _agent;
+    private Collider _collider;
 
     private ZombieState _state = ZombieState.Idle;
     private Dictionary<ZombieState, IZombieState> _states;
@@ -69,6 +72,9 @@ public class Zombie : MonoBehaviour, IDamageable
     public Vector3 PlayerPosition => _player.transform.position;
     public Vector3 RoamingPosition => _romingPoint.transform.position;
 
+    // 지금 목적지에 도착했는지. 경로 계산이 끝나지 않았으면 아직 도착하지 않은 것으로 본다.
+    public bool HasArrived => !_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance;
+
     private IObjectPool<Zombie> _pool;
 
     // 풀에서 생성될 때 한 번 호출된다. 사라질 때 이 풀로 돌아간다.
@@ -80,7 +86,6 @@ public class Zombie : MonoBehaviour, IDamageable
     // 풀에서 처음 생성되면 Start보다 Spawn이 먼저 호출되므로, 컴포넌트 참조는 Awake에서 가져온다.
     private void Awake()
     {
-        _controller = GetComponent<CharacterController>();
         _player = GameObject.FindGameObjectWithTag("Player");
 
         _states = new Dictionary<ZombieState, IZombieState>
@@ -93,6 +98,11 @@ public class Zombie : MonoBehaviour, IDamageable
             { ZombieState.Hit, new ZombieHitState(this) },
             { ZombieState.Death, new ZombieDeathState(this) },
         };
+        // 길을 찾아 걷게 해주는 컴포넌트 NavMeshAgent 를 찾아서 참조
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = _moveSpeed;
+
+        _collider = GetComponent<Collider>();
     }
 
     private void Start()
@@ -108,10 +118,14 @@ public class Zombie : MonoBehaviour, IDamageable
     // 프리팹은 씬의 로밍 지점을 참조할 수 없으므로 여기서 넘겨받는다.
     public void Spawn(Vector3 position, Quaternion rotation, GameObject roamingPoint)
     {
+        // 죽을 때 꺼둔 것을 다시 켠다.
+        _collider.enabled = true;
+        _agent.enabled = true;
+
         // CharacterController가 켜져 있으면 위치 변경이 무시될 수 있으므로 끈 상태에서 옮긴다.
-        _controller.enabled = false;
-        transform.SetPositionAndRotation(position, rotation);
-        _controller.enabled = true;
+        // transform이 아니라 Warp로 옮겨야 Agent가 그 위치의 NavMesh에 올라간다.
+        _agent.Warp(position);
+        transform.rotation = rotation;
 
         _romingPoint = roamingPoint;
         ResetStatus();
@@ -159,10 +173,12 @@ public class Zombie : MonoBehaviour, IDamageable
 
             // 잠깐 멈칫
             ChangeState(ZombieState.Hit);
+            StopAgent();
         }
         else
         {
             ChangeState(ZombieState.Death);
+            StopAgent();
             OnDied?.Invoke(this);
         }
     }
@@ -187,16 +203,16 @@ public class Zombie : MonoBehaviour, IDamageable
     // 목표 지점을 바라보며 수평으로 이동한다.
     public void MoveTo(Vector3 target)
     {
-        Vector3 direction = target - transform.position;
-        direction.y = 0f;
-        direction.Normalize();
-
-        transform.forward = direction;
-        _controller.SimpleMove(direction * _moveSpeed);
+        // SetDestination은 목적지 설정
+        // - 호출할 때 마다 목적지를 향해 조금씩 이동 (x)
+        // - 한 번 세팅하면 내부에서 계속해서 이동 (o)
+        _agent.SetDestination(target);
     }
 
     public void AttackPlayer()
     {
+        StopAgent();
+
         DamageInfo damageInfo = new DamageInfo();
         damageInfo.Value = _attackDamage;
         damageInfo.HitPoint = PlayerPosition;
@@ -204,10 +220,20 @@ public class Zombie : MonoBehaviour, IDamageable
         _player.GetComponent<IDamageable>().TakeDamage(damageInfo);
     }
 
+    public void StopAgent()
+    {
+        // 꺼져 있거나 NavMesh 위에 없는 Agent에 ResetPath를 부르면 에러가 난다.
+        if (!_agent.isOnNavMesh) return;
+
+        _agent.ResetPath(); // agent의 목적지 리셋
+        _agent.velocity = Vector3.zero; // 미끄럼 방지를 위해 가속도 0으로
+    }
+
     // 죽은 뒤 더 이상 충돌하거나 밀리지 않게 한다.
     public void DisableCollision()
     {
-        _controller.enabled = false;
+        _agent.enabled = false;
+        _collider.enabled = false;
     }
 
     // 풀에서 나온 좀비는 반납하고, 씬에 배치된 좀비는 파괴한다.

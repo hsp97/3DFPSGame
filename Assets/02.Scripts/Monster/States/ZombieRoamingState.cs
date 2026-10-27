@@ -1,8 +1,6 @@
 // 로밍 : 로밍 지점으로 이동하고, 도착하면 처음 자리로 돌아간다.
 public class ZombieRoamingState : IZombieState
 {
-    private const float ArriveDistance = 1f; // 도착으로 판정하는 거리
-
     private readonly Zombie _zombie;
 
     public ZombieRoamingState(Zombie zombie)
@@ -12,19 +10,19 @@ public class ZombieRoamingState : IZombieState
 
     public void Enter()
     {
+        // 로밍 지점은 움직이지 않으므로 들어올 때 한 번만 목적지를 정한다.
+        _zombie.MoveTo(_zombie.RoamingPosition);
     }
 
     public void Execute()
     {
-        _zombie.MoveTo(_zombie.RoamingPosition);
-
         if (_zombie.DistanceTo(_zombie.PlayerPosition) <= _zombie.DetectDistance)
         {
             _zombie.ChangeState(ZombieState.Trace);
             return;
         }
 
-        if (_zombie.DistanceTo(_zombie.RoamingPosition) <= ArriveDistance)
+        if (_zombie.HasArrived)
         {
             _zombie.ChangeState(ZombieState.Comeback);
         }

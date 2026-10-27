@@ -10,6 +10,8 @@ public class ZombieIdleState : IZombieState
 
     public void Enter()
     {
+        // 이동하다 멈출 때 관성으로 미끄러지지 않게 바로 세운다.
+        _zombie.StopAgent();
     }
 
     public void Execute()

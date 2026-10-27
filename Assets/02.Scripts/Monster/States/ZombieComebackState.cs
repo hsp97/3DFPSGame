@@ -1,8 +1,6 @@
 // 복귀 : 처음 자리로 돌아간다.
 public class ZombieComebackState : IZombieState
 {
-    private const float ArriveDistance = 1f; // 도착으로 판정하는 거리
-
     private readonly Zombie _zombie;
 
     public ZombieComebackState(Zombie zombie)
@@ -12,17 +10,16 @@ public class ZombieComebackState : IZombieState
 
     public void Enter()
     {
+        // 시작 위치는 바뀌지 않으므로 들어올 때 한 번만 목적지를 정한다.
+        _zombie.MoveTo(_zombie.StartPosition);
     }
 
     public void Execute()
     {
-        if (_zombie.DistanceTo(_zombie.StartPosition) <= ArriveDistance)
+        if (_zombie.HasArrived)
         {
             _zombie.ChangeState(ZombieState.Idle);
-            return;
         }
-
-        _zombie.MoveTo(_zombie.StartPosition);
     }
 
     public void Exit()
