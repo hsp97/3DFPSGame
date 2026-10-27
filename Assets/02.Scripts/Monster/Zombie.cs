@@ -46,6 +46,9 @@ public class Zombie : MonoBehaviour, IDamageable
     private Collider _collider;
     private Animator _animator;
 
+    // 살아 있는 동안 맞은 자리마다 생긴 피 이펙트. 죽을 때 한꺼번에 지운다.
+    private readonly List<GameObject> _bloodSprays = new List<GameObject>();
+
     private ZombieState _state = ZombieState.Idle;
     private Dictionary<ZombieState, IZombieState> _states;
     private IZombieState _currentState;
@@ -172,6 +175,7 @@ public class Zombie : MonoBehaviour, IDamageable
             GameObject bloodSpray = Instantiate(_bloodSprayPrefab, transform);
             bloodSpray.transform.position = damageInfo.HitPoint;
             bloodSpray.transform.forward = damageInfo.HitNormal;
+            _bloodSprays.Add(bloodSpray);
 
             // 잠깐 멈칫
             ChangeState(ZombieState.Hit);
@@ -181,8 +185,19 @@ public class Zombie : MonoBehaviour, IDamageable
         {
             ChangeState(ZombieState.Death);
             StopAgent();
+            ClearBloodSprays();
             OnDied?.Invoke(this);
         }
+    }
+
+    // 풀로 재사용될 때 이전 생의 피 이펙트가 다시 켜지지 않도록 지운다.
+    private void ClearBloodSprays()
+    {
+        foreach (GameObject bloodSpray in _bloodSprays)
+        {
+            Destroy(bloodSpray);
+        }
+        _bloodSprays.Clear();
     }
 
     public void ChangeState(ZombieState nextState)
