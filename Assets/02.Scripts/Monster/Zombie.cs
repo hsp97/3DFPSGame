@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -27,7 +28,7 @@ public class Zombie : MonoBehaviour, IDamageable
 {
     [Header("스탯")]
     [SerializeField] private float _detectDistance = 8; // 플레이어를 발견하는 거리
-    [SerializeField] private float _comebackDistance = 15;
+    [SerializeField] private float _comebackDistance = 15; // 추적 중인 플레이어가 이 거리보다 멀어지면 추적을 포기한다.
     [SerializeField] private float _attackDamage = 10f;
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1.2f; // 공격 간격
@@ -36,6 +37,10 @@ public class Zombie : MonoBehaviour, IDamageable
     [SerializeField] private float _health = 100f;
     [SerializeField] private GameObject _romingPoint;
 
+
+    [Header("점프")]
+    [SerializeField] private float _jumpHeight = 2f; // 포물선 꼭대기 높이
+    [SerializeField] private float _jumpDuration = 0.6f; // 링크를 건너는 데 걸리는 시간
 
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
@@ -48,6 +53,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
     // 살아 있는 동안 맞은 자리마다 생긴 피 이펙트. 죽을 때 한꺼번에 지운다.
     private readonly List<GameObject> _bloodSprays = new List<GameObject>();
+
+    private Coroutine _jumpCoroutine; // 링크를 건너는 중이면 null이 아니다.
 
     private ZombieState _state = ZombieState.Idle;
     private Dictionary<ZombieState, IZombieState> _states;
@@ -105,6 +112,8 @@ public class Zombie : MonoBehaviour, IDamageable
         // 길을 찾아 걷게 해주는 컴포넌트 NavMeshAgent 를 찾아서 참조
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = _moveSpeed;
+        // 링크를 직선으로 미끄러지듯 지나가지 않고, 코드에서 포물선으로 옮긴다.
+        _agent.autoTraverseOffMeshLink = false;
 
         _collider = GetComponent<Collider>();
         _animator = GetComponentInChildren<Animator>();
@@ -123,6 +132,9 @@ public class Zombie : MonoBehaviour, IDamageable
     // 프리팹은 씬의 로밍 지점을 참조할 수 없으므로 여기서 넘겨받는다.
     public void Spawn(Vector3 position, Quaternion rotation, GameObject roamingPoint)
     {
+        // 점프 중에 죽어서 풀로 돌아왔다면 코루틴은 이미 멈췄으므로 기록만 지운다.
+        _jumpCoroutine = null;
+
         // 죽을 때 꺼둔 것을 다시 켠다.
         _collider.enabled = true;
         _agent.enabled = true;
@@ -155,7 +167,39 @@ public class Zombie : MonoBehaviour, IDamageable
             return;
         }
 
+        // 경로 중간의 NavMeshLink에 올라서면 포물선 점프를 시작한다.
+        if (_jumpCoroutine == null && _agent.isOnOffMeshLink)
+        {
+            _jumpCoroutine = StartCoroutine(Jump_Coroutine());
+        }
+
+        // 점프 중에는 상태 로직을 멈춰서 목적지가 바뀌지 않게 한다.
+        if (_jumpCoroutine != null) return;
+
         _currentState.Execute();
+    }
+
+    private IEnumerator Jump_Coroutine()
+    {
+        OffMeshLinkData link = _agent.currentOffMeshLinkData;
+        Vector3 start = transform.position;
+        Vector3 end = link.endPos + Vector3.up * _agent.baseOffset; // 링크 끝은 발 위치라서 Base Offset만큼 올린다.
+
+        float time = 0f;
+        while (time < _jumpDuration)
+        {
+            float t = time / _jumpDuration;
+            Vector3 position = Vector3.Lerp(start, end, t);
+            position.y += _jumpHeight * 4f * t * (1f - t); // t=0.5에서 _jumpHeight가 되는 포물선
+            transform.position = position;
+
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = end;
+        _agent.CompleteOffMeshLink();
+        _jumpCoroutine = null;
     }
 
     // 대미지를 받는다.
@@ -176,6 +220,9 @@ public class Zombie : MonoBehaviour, IDamageable
             bloodSpray.transform.position = damageInfo.HitPoint;
             bloodSpray.transform.forward = damageInfo.HitNormal;
             _bloodSprays.Add(bloodSpray);
+
+            // 점프 중에 멈추면 공중에 뜬 채로 링크가 끊기므로, 착지할 때까지는 대미지만 받는다.
+            if (_jumpCoroutine != null) return;
 
             // 잠깐 멈칫
             ChangeState(ZombieState.Hit);
@@ -254,6 +301,13 @@ public class Zombie : MonoBehaviour, IDamageable
     // 죽은 뒤 더 이상 충돌하거나 밀리지 않게 한다.
     public void DisableCollision()
     {
+        // 점프 중에 죽으면 꺼진 Agent에 CompleteOffMeshLink를 부르지 않도록 점프를 멈춘다.
+        if (_jumpCoroutine != null)
+        {
+            StopCoroutine(_jumpCoroutine);
+            _jumpCoroutine = null;
+        }
+
         _agent.enabled = false;
         _collider.enabled = false;
     }

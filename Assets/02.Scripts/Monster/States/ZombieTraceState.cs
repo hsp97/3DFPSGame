@@ -15,8 +15,8 @@ public class ZombieTraceState : IZombieState
 
     public void Execute()
     {
-        // 처음 자리에서 너무 멀어지면 돌아간다.
-        if (_zombie.DistanceTo(_zombie.StartPosition) > _zombie.ComebackDistance)
+        // 시작 지점과 상관없이, 플레이어가 추적 범위를 벗어났을 때만 포기하고 돌아간다.
+        if (_zombie.DistanceTo(_zombie.PlayerPosition) > _zombie.ComebackDistance)
         {
             _zombie.ChangeState(ZombieState.Comeback);
             return;
