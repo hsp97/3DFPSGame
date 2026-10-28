@@ -3623,7 +3623,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBombFire
   _firePoint: {fileID: 2015785248}
   _bombPrefab: {fileID: 64837993550276244, guid: 9a61cdad899c6ca44b785e76de4d9420, type: 3}
-  _throwPower: 15
+  _minThrowPower: 15
+  _maxThrowPower: 30
+  _maxChargeTime: 1.5
+  _releaseDelay: 0.5
   _bombParent: {fileID: 1760178889}
   _defaultCapacity: 10
   _maxPoolSize: 30
