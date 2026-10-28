@@ -5,12 +5,13 @@ using Object = System.Object;
 public class Player : MonoBehaviour, IDamageable
 {
     private PlayerStats _stats;
-
+    private Animator _animator;
     // Action 자료형 : 함수(들)을 저장할 수 있다.
     public event Action OnDamaged;
     private void Start()
     {
         _stats = GetComponent<PlayerStats>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     public void TakeDamage(DamageInfo damageInfo)
@@ -23,8 +24,9 @@ public class Player : MonoBehaviour, IDamageable
 
         if (_stats.Health <= 0f)
         {
-            Debug.Log("플레이어 죽음");
             GameManager.Instance.GameOver();
         }
+
+        _animator.SetTrigger("Hit");
     }
 }

@@ -28,6 +28,8 @@ public class PlayerGunFire : MonoBehaviour
 
     private ObjectPool<PlayerBulletTrail> _trailPool;
 
+    private Animator _animator;
+
     private void Awake()
     {
         _trailPool = new ObjectPool<PlayerBulletTrail>(
@@ -38,6 +40,8 @@ public class PlayerGunFire : MonoBehaviour
             collectionCheck: true,
             defaultCapacity: _trailDefaultCapacity,
             maxSize: _trailMaxPoolSize);
+
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Start()
@@ -72,6 +76,11 @@ public class PlayerGunFire : MonoBehaviour
             _bulletCount--;
             _fireTimer = _fireInterval;
             Shoot();
+
+            if (_animator.GetFloat("MoveMotion") == 0f)
+            {
+                _animator.SetTrigger("Attack");
+            }
 
             // 이 방식은: 이 모노비헤이비어가 등록한 모든 코루틴을 실행 취소
             // StopAllCoroutines();

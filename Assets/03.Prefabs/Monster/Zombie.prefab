@@ -232,6 +232,8 @@ MonoBehaviour:
   _maxHealth: 100
   _health: 100
   _romingPoint: {fileID: 0}
+  _jumpHeight: 2
+  _jumpDuration: 0.6
   _bloodSprayPrefab: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f, type: 3}
 --- !u!114 &822461769223397743
 MonoBehaviour:
@@ -605,7 +607,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 578376449398627443, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.04805
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 578376449398627443, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
       propertyPath: m_LocalPosition.y
