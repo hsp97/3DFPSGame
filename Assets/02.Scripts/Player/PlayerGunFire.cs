@@ -77,10 +77,7 @@ public class PlayerGunFire : MonoBehaviour
             _fireTimer = _fireInterval;
             Shoot();
 
-            if (_animator.GetFloat("MoveMotion") == 0f)
-            {
-                _animator.SetTrigger("Attack");
-            }
+            _animator.SetBool("Fire", true);
 
             // 이 방식은: 이 모노비헤이비어가 등록한 모든 코루틴을 실행 취소
             // StopAllCoroutines();
@@ -91,6 +88,10 @@ public class PlayerGunFire : MonoBehaviour
                 Debug.Log("재장전 취소!");
                 _reloadCoroutine = null;
             }
+        }
+        else
+        {
+            _animator.SetBool("Fire", false);
         }
 
         // 2. R키 누르면 총알 재장전 시작

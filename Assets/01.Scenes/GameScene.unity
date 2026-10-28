@@ -1107,6 +1107,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 893471417a206f44fa802e9ded2bcfe8, type: 2}
+    - target: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1268,7 +1272,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 1
+  near clip plane: 0.25
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -1727,7 +1731,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 477044465}
-  - component: {fileID: 477044464}
   - component: {fileID: 477044463}
   m_Layer: 0
   m_Name: '@ZombieManager'
@@ -1748,20 +1751,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ec5ab6dd4e40aa8e23e0c6daa150f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZombieManager
---- !u!114 &477044464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 477044462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98eef5dd6c34dab4983b6133942d0454, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  _stateText: {fileID: 668180355}
-  _playerAnimator: {fileID: 0}
 --- !u!4 &477044465
 Transform:
   m_ObjectHideFlags: 0
@@ -3460,7 +3449,7 @@ GameObject:
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4397,7 +4386,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1572438440}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d28a8df825d229442bffaf994eff3325, type: 3}
   m_Name: 
