@@ -7,6 +7,10 @@ public class Player : MonoBehaviour, IDamageable
     private PlayerStats _stats;
     private Animator _animator;
     private int _injuredLayerIndex;
+
+    private WeaponMode _weaponMode = WeaponMode.Normal;
+    public WeaponMode WeaponMode => _weaponMode;
+
     // Action 자료형 : 함수(들)을 저장할 수 있다.
     public event Action OnDamaged;
     private void Start()
@@ -37,5 +41,17 @@ public class Player : MonoBehaviour, IDamageable
         }
 
         _animator.SetTrigger("Hit");
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            _weaponMode = WeaponMode.Normal;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _weaponMode = WeaponMode.Sniper;
+        }
     }
 }

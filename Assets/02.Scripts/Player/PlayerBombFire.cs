@@ -30,6 +30,8 @@ public class PlayerBombFire : MonoBehaviour
     private bool _isCharging = false;
     private bool _isThrowing = false; // 투척 모션이 진행 중이면 새로 던질 수 없다.
 
+    private Player _player;
+
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
@@ -42,6 +44,11 @@ public class PlayerBombFire : MonoBehaviour
             collectionCheck: true,
             defaultCapacity: _defaultCapacity,
             maxSize: _maxPoolSize);
+    }
+
+    private void Start()
+    {
+        _player.GetComponent<Player>();
     }
 
     private void Update()
@@ -71,7 +78,7 @@ public class PlayerBombFire : MonoBehaviour
 
         // 2. G키를 떼면 모은 시간에 비례한 힘으로 던진다.
         // GetKeyUp 대신 GetKey로 확인해서, 게임 상태가 바뀌는 동안 뗀 입력도 놓치지 않는다.
-        if (!Input.GetKey(KeyCode.G))
+        if (!Input.GetKey(KeyCode.G) && _player.WeaponMode == WeaponMode.Normal)
         {
             _isCharging = false;
             float power = Mathf.Lerp(_minThrowPower, _maxThrowPower, _chargeTime / _maxChargeTime);
