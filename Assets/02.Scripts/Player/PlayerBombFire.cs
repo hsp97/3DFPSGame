@@ -62,6 +62,13 @@ public class PlayerBombFire : MonoBehaviour
             return;
         }
 
+        // 일반 모드에서만 던질 수 있다. 다른 모드로 바뀌면 모으던 힘은 취소한다.
+        if (_player.WeaponMode != WeaponMode.Normal)
+        {
+            _isCharging = false;
+            return;
+        }
+
         // 1. G키를 누르면 힘 모으기를 시작한다. (카메라 우클릭과 분리)
         if (Input.GetKeyDown(KeyCode.G))
         {
@@ -78,7 +85,7 @@ public class PlayerBombFire : MonoBehaviour
 
         // 2. G키를 떼면 모은 시간에 비례한 힘으로 던진다.
         // GetKeyUp 대신 GetKey로 확인해서, 게임 상태가 바뀌는 동안 뗀 입력도 놓치지 않는다.
-        if (!Input.GetKey(KeyCode.G) && _player.WeaponMode == WeaponMode.Normal)
+        if (!Input.GetKey(KeyCode.G))
         {
             _isCharging = false;
             float power = Mathf.Lerp(_minThrowPower, _maxThrowPower, _chargeTime / _maxChargeTime);
