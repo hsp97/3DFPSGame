@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -17,6 +18,7 @@ public class PlayerBombFire : MonoBehaviour
     [SerializeField] private float _maxThrowPower = 30f; // 최대로 모았을 때의 힘
     [SerializeField] private float _maxChargeTime = 1.5f; // 최대 힘에 도달하는 데 걸리는 시간(초)
     [SerializeField] private float _releaseDelay = 0.5f; // 투척 모션 시작 후 손에서 수류탄이 떠나는 시점(초)
+    [SerializeField] private int _maxGrenadeCount = 3; // 가지고 있을 수 있는 최대 수류탄 수
 
     [Header("오브젝트 풀")]
     [SerializeField] private Transform _bombParent; // 생성된 수류탄을 모아둘 부모 오브젝트(Bombs)
@@ -32,9 +34,15 @@ public class PlayerBombFire : MonoBehaviour
 
     private Player _player;
 
+    private int _grenadeCount = 0;
+    public int GrenadeCount => _grenadeCount;
+
+    public event Action OnGrenadeChanged;
+
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
+        _grenadeCount = _maxGrenadeCount;
 
         _bombPool = new ObjectPool<Bomb>(
             createFunc: CreateBomb,
@@ -69,8 +77,8 @@ public class PlayerBombFire : MonoBehaviour
             return;
         }
 
-        // 1. G키를 누르면 힘 모으기를 시작한다. (카메라 우클릭과 분리)
-        if (Input.GetKeyDown(KeyCode.G))
+        // 1. 수류탄이 남아 있을 때 G키를 누르면 힘 모으기를 시작한다. (카메라 우클릭과 분리)
+        if (Input.GetKeyDown(KeyCode.G) && _grenadeCount > 0)
         {
             _isCharging = true;
             _chargeTime = 0f;
@@ -96,6 +104,8 @@ public class PlayerBombFire : MonoBehaviour
     private IEnumerator Throw_Coroutine(float power)
     {
         _isThrowing = true;
+        _grenadeCount--;
+        OnGrenadeChanged?.Invoke();
         _animator.SetTrigger(ThrowHash);
 
         // 모션에서 손이 수류탄을 놓는 시점까지 기다렸다가 던진다.

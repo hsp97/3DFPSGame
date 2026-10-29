@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -9,7 +11,6 @@ public class PlayerGunFire : MonoBehaviour
     [SerializeField] private ParticleSystem _hitEffectPrefab;
 
     [Header("스탯")]
-    [SerializeField] private int _maxBulletCount = 30;
     [SerializeField] private float _reloadingTime = 3f;
     [SerializeField] private float _range = 100f; // 사거리
     [SerializeField] private float _damage = 10f; // 공격력
@@ -23,15 +24,27 @@ public class PlayerGunFire : MonoBehaviour
     [SerializeField] private int _trailMaxPoolSize = 30; // 풀에 보관할 최대 개수, 넘치면 파괴한다.
 
     private float _fireTimer = 0f;
-    private int _bulletCount = 0;
     private Coroutine _reloadCoroutine = null;
+
+    // 무기마다 남은 총알 수를 따로 가진다. 무기를 바꿔도 다른 무기의 총알은 유지된다.
+    private readonly Dictionary<WeaponMode, int> _bulletCounts = new Dictionary<WeaponMode, int>();
+
+    public event Action OnBulletChanged;
 
     private ObjectPool<PlayerBulletTrail> _trailPool;
 
     private Animator _animator;
+    private Player _player;
 
     private void Awake()
     {
+        _player = GetComponent<Player>();
+
+        foreach (WeaponMode mode in Enum.GetValues(typeof(WeaponMode)))
+        {
+            _bulletCounts[mode] = mode.GetMaxBulletCount();
+        }
+
         _trailPool = new ObjectPool<PlayerBulletTrail>(
             createFunc: CreateTrail,
             actionOnGet: trail => trail.gameObject.SetActive(true),
@@ -44,9 +57,9 @@ public class PlayerGunFire : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
     }
 
-    private void Start()
+    public int GetBulletCount(WeaponMode mode)
     {
-        _bulletCount = _maxBulletCount;
+        return _bulletCounts[mode];
     }
 
     // 풀에 남은 궤적이 없을 때만 호출된다.
@@ -71,9 +84,12 @@ public class PlayerGunFire : MonoBehaviour
         bool isMouseVisible = Cursor.visible;
 
         // 1. 마우스 왼쪽 버튼 입력 받기
-        if (!isMouseVisible && Input.GetButton("Fire1") && _fireTimer <= 0f && _bulletCount > 0)
+        WeaponMode mode = _player.WeaponMode;
+
+        if (!isMouseVisible && Input.GetButton("Fire1") && _fireTimer <= 0f && _bulletCounts[mode] > 0)
         {
-            _bulletCount--;
+            _bulletCounts[mode]--;
+            OnBulletChanged?.Invoke();
             _fireTimer = _fireInterval;
             Shoot();
 
@@ -85,7 +101,6 @@ public class PlayerGunFire : MonoBehaviour
             if (_reloadCoroutine != null)
             {
                 StopCoroutine(_reloadCoroutine);
-                Debug.Log("재장전 취소!");
                 _reloadCoroutine = null;
             }
         }
@@ -97,19 +112,18 @@ public class PlayerGunFire : MonoBehaviour
         // 2. R키 누르면 총알 재장전 시작
         if (Input.GetKeyDown(KeyCode.R) && _reloadCoroutine == null)
         {
-            _reloadCoroutine = StartCoroutine(Reloading_Coroutine());
+            _reloadCoroutine = StartCoroutine(Reloading_Coroutine(mode));
         }
     }
 
-    private IEnumerator Reloading_Coroutine()
+    // 재장전 도중 무기를 바꿔도 재장전을 시작한 무기의 총알을 채운다.
+    private IEnumerator Reloading_Coroutine(WeaponMode mode)
     {
-        Debug.Log("재장전 시작!");
-
         yield return new WaitForSeconds(_reloadingTime);
 
-        _bulletCount = _maxBulletCount;
+        _bulletCounts[mode] = mode.GetMaxBulletCount();
+        OnBulletChanged?.Invoke();
 
-        Debug.Log("재장전 완료!");
         _reloadCoroutine = null;
     }
 
