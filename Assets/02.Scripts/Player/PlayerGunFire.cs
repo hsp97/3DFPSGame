@@ -16,6 +16,9 @@ public class PlayerGunFire : MonoBehaviour
     [SerializeField] private float _damage = 10f; // 공격력
     [SerializeField] private float _fireInterval = 0.1f; // 발사 속도
 
+    [SerializeField] private GameObject[] _muzzleFlashes;
+    [SerializeField] private float _flashTime = 0.05f;
+
     [Header("총알 궤적")]
     [SerializeField] private Transform _muzzle; // 총구 위치
     [SerializeField] private PlayerBulletTrail _trailPrefab;
@@ -130,6 +133,7 @@ public class PlayerGunFire : MonoBehaviour
 
     private void Shoot()
     {
+        StartCoroutine(MuzzleFlash_Coroutine());
         // Ray: 레이저(시작위치, 날아갈 방향)
         // Physics.RayCast: 레이저를 발사
         // RayCastHit: 레이저가 물체와 부딛히면 그 정보를 저장하는 구조체
@@ -169,5 +173,14 @@ public class PlayerGunFire : MonoBehaviour
         Vector3 endPoint = isHit ? hitInfo.point : ray.origin + ray.direction * _range;
         PlayerBulletTrail trail = _trailPool.Get();
         trail.Show(_muzzle.position, endPoint);
+    }
+
+    private IEnumerator MuzzleFlash_Coroutine()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, _muzzleFlashes.Length);
+        GameObject flash = _muzzleFlashes[randomIndex];
+        flash.SetActive(true);
+        yield return new WaitForSeconds(_flashTime);
+        flash.SetActive(false);
     }
 }
