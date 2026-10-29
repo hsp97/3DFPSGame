@@ -29,7 +29,7 @@ public class Player : MonoBehaviour, IDamageable
 
         // 체력에 따라 Injured Layer의 가중치를 바꿔준다.
         float healthPercent = _stats.Health / _stats.MaxHealth; // 0~1 
-        float injured = Mathf.InverseLerp(0f, 1f, healthPercent);
+        float injured = Mathf.InverseLerp(0.5f, 0f, healthPercent);
 
         // index(레이어 인덱스), 가중치
         _animator.SetLayerWeight(_injuredLayerIndex, injured);
