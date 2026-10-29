@@ -3,6 +3,7 @@ public enum WeaponMode
 {
     Normal,  // 일반 모드(라이플): 폭탄을 던진다.
     Sniper,  // 저격 모드(스나이퍼): 조준경으로 확대한다.
+    Sword,   // 근접 모드(검): 공격키로 검을 휘두른다. 총알과 수류탄은 쓰지 않는다.
 }
 
 public static class WeaponModeExtensions

@@ -7,6 +7,7 @@ public class Player : MonoBehaviour, IDamageable
     private PlayerStats _stats;
     private Animator _animator;
     private int _injuredLayerIndex;
+    private int _swordLayerIndex;
 
     private WeaponMode _weaponMode = WeaponMode.Normal;
     public WeaponMode WeaponMode => _weaponMode;
@@ -19,6 +20,7 @@ public class Player : MonoBehaviour, IDamageable
         _stats = GetComponent<PlayerStats>();
         _animator = GetComponentInChildren<Animator>();
         _injuredLayerIndex = _animator.GetLayerIndex("Injured Layer");
+        _swordLayerIndex = _animator.GetLayerIndex("Sword Layer");
     }
 
     public void TakeDamage(DamageInfo damageInfo)
@@ -54,6 +56,10 @@ public class Player : MonoBehaviour, IDamageable
         {
             SetWeaponMode(WeaponMode.Sniper);
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SetWeaponMode(WeaponMode.Sword);
+        }
     }
 
     private void SetWeaponMode(WeaponMode mode)
@@ -61,6 +67,10 @@ public class Player : MonoBehaviour, IDamageable
         if (_weaponMode == mode) return;
 
         _weaponMode = mode;
+
+        // 검 모드일 때만 검 자세와 공격(Sword Layer의 Idle, Attack)을 켠다.
+        _animator.SetLayerWeight(_swordLayerIndex, mode == WeaponMode.Sword ? 1f : 0f);
+
         OnWeaponModeChanged?.Invoke();
     }
 }
