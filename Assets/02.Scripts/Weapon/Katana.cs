@@ -6,6 +6,12 @@ public class Katana : MonoBehaviour
     [SerializeField] private float _damage = 25f;
     private void OnTriggerEnter(Collider other)
     {
+        // 검이 플레이어 자신의 몸에 닿아도 대미지를 주지 않는다.
+        if (other.GetComponentInParent<Player>() != null)
+        {
+            return;
+        }
+
         if (other.TryGetComponent<IDamageable>(out IDamageable damageable))
         {
             DamageInfo damageInfo = new DamageInfo();

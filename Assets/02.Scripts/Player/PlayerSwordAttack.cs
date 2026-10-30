@@ -15,6 +15,9 @@ public class PlayerSwordAttack : MonoBehaviour
     {
         _player = GetComponentInParent<Player>();
         _animator = GetComponentInChildren<Animator>();
+
+        // 이벤트가 켜기 전까지는 꺼 둔다.
+        _katanaCollider.enabled = false;
     }
 
     public void ActivateCollider()
@@ -38,5 +41,11 @@ public class PlayerSwordAttack : MonoBehaviour
 
         bool isSlashing = _player.WeaponMode == WeaponMode.Sword && !Cursor.visible && Input.GetButton("Fire1");
         _animator.SetBool(SlashHash, isSlashing);
+
+        // 공격이 끊겨 UnActivate 이벤트를 못 만나도 콜라이더가 켜진 채 남지 않게 한다.
+        if (!isSlashing && _katanaCollider.enabled)
+        {
+            _katanaCollider.enabled = false;
+        }
     }
 }
