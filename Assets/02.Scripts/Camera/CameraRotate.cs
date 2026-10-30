@@ -5,7 +5,7 @@ using UnityEngine;
 public class FpsCameraRotate : MonoBehaviour
 {
     [SerializeField] private float _rotationSpeed = 500f;
-    private float _accumulationX = 0f; // 좌우 회전 각도
+    [SerializeField] private PlayerRotate _playerRotate; // 좌우 회전은 플레이어의 값을 따른다.
     private float _accumulationY = 0f; // 상하 회전 각도
 
     private void Update()
@@ -15,19 +15,17 @@ public class FpsCameraRotate : MonoBehaviour
             return;
         }
         // 1. 마우스 입력을 받는다.
-        float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
 
-        // 2. 마우스 입력만큼 회전값을 누적한다.
+        // 2. 마우스 입력만큼 상하 회전값을 누적한다. (좌우 회전은 PlayerRotate가 누적한 값을 쓴다.)
         float deltaTime = Time.deltaTime;
-        _accumulationX += mouseX * _rotationSpeed * deltaTime;
         _accumulationY += -mouseY * _rotationSpeed * deltaTime;
 
         // 3. 누적하기 전에 내 변수에서 먼저 -90~90도 제한
         _accumulationY = Mathf.Clamp(_accumulationY, -90f, 90f);
 
         // 4. 누적한 회전값을 카메라에 적용한다.
-        transform.eulerAngles = new Vector3(_accumulationY, _accumulationX, 0f);
+        transform.eulerAngles = new Vector3(_accumulationY, _playerRotate.Yaw, 0f);
 
         /*
         // 3. 그 방향으로 회전 시킨다.

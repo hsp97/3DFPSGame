@@ -55,7 +55,17 @@ public class PlayerMove : MonoBehaviour
         Vector3 direction = new Vector3(h, 0, v);
         direction.Normalize();
         _animator.SetFloat("MoveMotion", direction.magnitude);
-        direction = transform.TransformDirection(direction);
+        if (CameraManager.Instance.IsCursorAim)
+        {
+            // 쿼터뷰와 탑다운은 플레이어가 커서를 보므로, 카메라가 보는 방향을 기준으로 움직인다.
+            Vector3 cameraForward = CameraManager.Instance.CameraTransform.forward;
+            cameraForward.y = 0f;
+            direction = Quaternion.LookRotation(cameraForward.normalized) * direction;
+        }
+        else
+        {
+            direction = transform.TransformDirection(direction);
+        }
         // 로컬 좌표계 : 한 대상을 중심
         // 월드 좌표계 : 세상을 중심
 

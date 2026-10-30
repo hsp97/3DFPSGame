@@ -19,7 +19,9 @@ public class PlayerZoom : MonoBehaviour
             return;
         }
 
-        bool isZooming = _player.WeaponMode == WeaponMode.Sniper && Input.GetMouseButton(1);
+        // 조준경 화면은 1인칭에서만 쓴다. 쿼터뷰는 오른쪽 버튼이 카메라 회전이기도 하다.
+        bool isZooming = _player.WeaponMode == WeaponMode.Sniper && Input.GetMouseButton(1)
+            && CameraManager.Instance.Mode == CameraViewMode.FPS;
         _sniperZoom.SetActive(isZooming);
         Camera.main.fieldOfView = isZooming ? _sniperPov : _normalPov;
     }

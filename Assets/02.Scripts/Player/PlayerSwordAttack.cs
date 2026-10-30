@@ -39,7 +39,7 @@ public class PlayerSwordAttack : MonoBehaviour
             return;
         }
 
-        bool isSlashing = _player.WeaponMode == WeaponMode.Sword && !Cursor.visible && Input.GetButton("Fire1");
+        bool isSlashing = _player.WeaponMode == WeaponMode.Sword && !CursorManager.IsUiCursor && Input.GetButton("Fire1");
         _animator.SetBool(SlashHash, isSlashing);
 
         // 공격이 끊겨 UnActivate 이벤트를 못 만나도 콜라이더가 켜진 채 남지 않게 한다.
