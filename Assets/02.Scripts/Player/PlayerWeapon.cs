@@ -10,16 +10,24 @@ public class PlayerWeapon : MonoBehaviour
     {
         [SerializeField] private WeaponMode _mode;
         [SerializeField] private GameObject _root; // 이 무기의 UI 묶음. 현재 무기일 때만 보인다.
-        [SerializeField] private TextMeshProUGUI _remainText;
-        [SerializeField] private TextMeshProUGUI _granadeText;
+        [SerializeField] private TextMeshProUGUI _remainText; // 검처럼 총알이 없는 무기는 비워 둔다.
+        [SerializeField] private TextMeshProUGUI _granadeText; // 수류탄을 쓰지 않는 무기는 비워 둔다.
 
         public WeaponMode Mode => _mode;
 
         public void Refresh(bool isCurrent, int bulletCount, int grenadeCount)
         {
             _root.SetActive(isCurrent);
-            _remainText.text = $"{bulletCount} / {_mode.GetMaxBulletCount()}";
-            _granadeText.text = $"폭탄 {grenadeCount}";
+
+            if (_remainText != null)
+            {
+                _remainText.text = $"{bulletCount} / {_mode.GetMaxBulletCount()}";
+            }
+
+            if (_granadeText != null)
+            {
+                _granadeText.text = $"폭탄 {grenadeCount}";
+            }
         }
     }
 
