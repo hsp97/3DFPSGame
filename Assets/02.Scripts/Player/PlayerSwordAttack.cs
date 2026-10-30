@@ -8,9 +8,13 @@ public class PlayerSwordAttack : MonoBehaviour
 
     private Player _player;
     private Animator _animator;
-
+    [SerializeField] private MeleeHitMode _hitMode = MeleeHitMode.Collider;  // 맞힐 대상을 고르는 방법
     [SerializeField] private Collider _katanaCollider;
 
+    [Header("부채꼴")]
+    [SerializeField] private float _range = 2f;
+    [SerializeField] private float _angle = 90f;
+    [SerializeField] private LayerMask _targetMask;
     private void Awake()
     {
         _player = GetComponentInParent<Player>();
@@ -20,8 +24,43 @@ public class PlayerSwordAttack : MonoBehaviour
         _katanaCollider.enabled = false;
     }
 
+    public void FanAttack()
+    {
+        if (_hitMode != MeleeHitMode.Fan) return;
+
+        Vector3 origin = _player.transform.position;
+
+        Collider[] colliders = Physics.OverlapSphere(origin, _range, _targetMask);
+        foreach (Collider col in colliders)
+        {
+
+            Vector3 hitPoint = col.ClosestPoint(origin);
+            Vector3 direction = (hitPoint - origin);
+            direction.y = 0f;
+            float angle = Vector3.Angle(_player.transform.forward, direction);
+            if (angle > _angle / 2f) continue;
+
+            if (Physics.Linecast(origin, hitPoint, LayerMask.NameToLayer("Wall"))) continue;
+
+            if (col.TryGetComponent(out IDamageable damageable))
+            {
+                DamageInfo damageInfo = new DamageInfo();
+                damageInfo.Value = 25f;
+                damageInfo.HitPoint = hitPoint;
+                damageInfo.HitNormal = (origin - hitPoint).normalized;
+                damageable.TakeDamage(damageInfo);
+            }
+        }
+    }
     public void ActivateCollider()
     {
+        // 부채꼴 방식은 휘두르는 순간에 한 번 판정하고, 콜라이더 방식은 칼날 콜라이더를 켠다.
+        if (_hitMode == MeleeHitMode.Fan)
+        {
+            FanAttack();
+            return;
+        }
+
         // 카타나 콜라이더 활성화
         _katanaCollider.enabled = true;
     }

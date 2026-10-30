@@ -1,9 +1,18 @@
+using System;
 using UnityEngine;
 
 public class Katana : MonoBehaviour
 {
-    [SerializeField] private Player _player;
+
     [SerializeField] private float _damage = 25f;
+
+    private Player _player;
+    private void Awake()
+    {
+        _player = GetComponentInParent<Player>();
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
         // 검이 플레이어 자신의 몸에 닿아도 대미지를 주지 않는다.

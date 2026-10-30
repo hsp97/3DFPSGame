@@ -5208,7 +5208,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8beecc8c42d465242a859848c6c268f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSwordAttack
+  _hitMode: 1
   _katanaCollider: {fileID: 2016263028}
+  _range: 2
+  _angle: 90
+  _targetMask:
+    serializedVersion: 2
+    m_Bits: 768
 --- !u!1 &1213549346
 GameObject:
   m_ObjectHideFlags: 0
@@ -7590,7 +7596,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8aaba4a413aa924f8078d20d67bbe07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Katana
-  _player: {fileID: 1167947697}
   _damage: 25
 --- !u!1 &2031615535
 GameObject:
