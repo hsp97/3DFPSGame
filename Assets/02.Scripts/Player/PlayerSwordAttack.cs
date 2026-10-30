@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.VFX;
 
 // 검 모드에서 공격키(마우스 왼쪽 버튼)를 누르고 있는 동안 Slash 애니메이션을 재생하고 싶다.
 public class PlayerSwordAttack : MonoBehaviour
@@ -15,6 +16,14 @@ public class PlayerSwordAttack : MonoBehaviour
     [SerializeField] private float _range = 2f;
     [SerializeField] private float _angle = 90f;
     [SerializeField] private LayerMask _targetMask;
+
+    [Header("이펙트")]
+    [SerializeField] private VisualEffect _slashEffect; // 휘두를 때 한 번 재생하는 베기 이펙트
+    [SerializeField] private float _slashRadius = 1.5f; // 이펙트 반지름
+    [SerializeField] private float _slashWidth = 0.63f; // 이펙트 폭
+    [SerializeField] private float _slashSweepDegrees = 137f; // 휘두르는 각도
+    [SerializeField] private float _slashStartDegrees = 0f; // 시작 각도
+
     private void Awake()
     {
         _player = GetComponentInParent<Player>();
@@ -22,6 +31,14 @@ public class PlayerSwordAttack : MonoBehaviour
 
         // 이벤트가 켜기 전까지는 꺼 둔다.
         _katanaCollider.enabled = false;
+
+        if (_slashEffect != null)
+        {
+            _slashEffect.SetFloat("Radius", _slashRadius);
+            _slashEffect.SetFloat("Width", _slashWidth);
+            _slashEffect.SetFloat("SweepDegrees", _slashSweepDegrees);
+            _slashEffect.SetFloat("StartDegrees", _slashStartDegrees);
+        }
     }
 
     public void FanAttack()
@@ -54,6 +71,12 @@ public class PlayerSwordAttack : MonoBehaviour
     }
     public void ActivateCollider()
     {
+        // 휘두르는 순간(애니메이션 이벤트)에 베기 이펙트를 재생한다.
+        if (_slashEffect != null)
+        {
+            _slashEffect.SendEvent("OnPlay");
+        }
+
         // 부채꼴 방식은 휘두르는 순간에 한 번 판정하고, 콜라이더 방식은 칼날 콜라이더를 켠다.
         if (_hitMode == MeleeHitMode.Fan)
         {
