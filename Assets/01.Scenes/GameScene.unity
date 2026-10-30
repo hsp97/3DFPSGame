@@ -8,8 +8,8 @@ OcclusionCullingSettings:
     smallestOccluder: 5
     smallestHole: 0.25
     backfaceThreshold: 100
-  m_SceneGUID: 00000000000000000000000000000000
-  m_OcclusionCullingData: {fileID: 0}
+  m_SceneGUID: 99c9720ab356a0642a771bea13969a05
+  m_OcclusionCullingData: {fileID: 36300000, guid: 96cf15990684a904da15d53d0147e587, type: 2}
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
@@ -5082,6 +5082,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 70.5
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a6dc34012ba06f343b16b25d7743bfa4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a6dc34012ba06f343b16b25d7743bfa4, type: 3}
+      propertyPath: m_MeshLodSelectionBias
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a6dc34012ba06f343b16b25d7743bfa4, type: 3}
       propertyPath: m_Name
       value: Katana
@@ -8686,6 +8694,14 @@ PrefabInstance:
     - target: {fileID: 5997867342286290880, guid: 60fa3839890608141bb1de4cd2de2952, type: 3}
       propertyPath: m_Name
       value: FX_ClaudeSlash
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997867342286290880, guid: 60fa3839890608141bb1de4cd2de2952, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6915517985290148040, guid: 60fa3839890608141bb1de4cd2de2952, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20158,6 +20174,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0
       objectReference: {fileID: 0}
+    - target: {fileID: 554850442510106554, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 554850442510106554, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
+      propertyPath: m_MeshLodSelectionBias
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
       propertyPath: m_Name
       value: CallOfDuty_Ghost
@@ -27581,7 +27605,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &1706501719

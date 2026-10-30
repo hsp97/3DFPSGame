@@ -1,0 +1,17 @@
+[
+{"view":"V1_start_N","minimap":"on","batches":435,"drawCalls":434,"setPass":90,"triangles":3784023,"vertices":4141845,"shadowCasters":255,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V2_start_E","minimap":"on","batches":864,"drawCalls":866,"setPass":84,"triangles":2237760,"vertices":2044402,"shadowCasters":446,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V3_start_S","minimap":"on","batches":605,"drawCalls":609,"setPass":82,"triangles":2159661,"vertices":1836828,"shadowCasters":322,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V4_start_W","minimap":"on","batches":465,"drawCalls":464,"setPass":84,"triangles":3191587,"vertices":2680087,"shadowCasters":288,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V5_east_dense","minimap":"on","batches":261,"drawCalls":262,"setPass":74,"triangles":188295,"vertices":514809,"shadowCasters":162,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V6_overview","minimap":"on","batches":890,"drawCalls":890,"setPass":87,"triangles":269439,"vertices":681193,"shadowCasters":438,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V7_far_edge","minimap":"on","batches":695,"drawCalls":669,"setPass":86,"triangles":227765,"vertices":585857,"shadowCasters":266,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V1_start_N","minimap":"off","batches":295,"drawCalls":296,"setPass":64,"triangles":3632025,"vertices":3697067,"shadowCasters":153,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V2_start_E","minimap":"off","batches":725,"drawCalls":725,"setPass":57,"triangles":2085699,"vertices":1599555,"shadowCasters":344,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V3_start_S","minimap":"off","batches":470,"drawCalls":469,"setPass":55,"triangles":2060468,"vertices":1551150,"shadowCasters":220,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V4_start_W","minimap":"off","batches":325,"drawCalls":325,"setPass":57,"triangles":3040207,"vertices":2236303,"shadowCasters":186,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V5_east_dense","minimap":"off","batches":125,"drawCalls":125,"setPass":47,"triangles":36526,"vertices":71344,"shadowCasters":60,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V6_overview","minimap":"off","batches":750,"drawCalls":750,"setPass":60,"triangles":117388,"vertices":236360,"shadowCasters":336,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V7_far_edge","minimap":"off","batches":553,"drawCalls":553,"setPass":59,"triangles":75636,"vertices":140868,"shadowCasters":164,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":1},
+{"view":"V1_start_N+zombies10","minimap":"on","batches":828,"drawCalls":833,"setPass":107,"triangles":3915520,"vertices":4236576,"shadowCasters":473,"staticBatchedDC":0,"instancedBatchedDC":0,"visibleSkinnedMeshes":141}
+]
