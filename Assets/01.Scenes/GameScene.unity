@@ -1383,6 +1383,11 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &316020709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
+  m_PrefabInstance: {fileID: 1206010164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &316385054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4033682089069048765, guid: 51dfc405cb04a914b8e87867f7c71c1a, type: 3}
@@ -1619,7 +1624,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: a6dc34012ba06f343b16b25d7743bfa4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2016263027}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6dc34012ba06f343b16b25d7743bfa4, type: 3}
 --- !u!4 &349358917 stripped
@@ -4277,7 +4285,6 @@ GameObject:
   - component: {fileID: 1167947696}
   - component: {fileID: 1167947697}
   - component: {fileID: 1167947698}
-  - component: {fileID: 1167947699}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -4512,18 +4519,6 @@ MonoBehaviour:
   _sniperZoom: {fileID: 1037472476}
   _normalPov: 60
   _sniperPov: 15
---- !u!114 &1167947699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1167947686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8beecc8c42d465242a859848c6c268f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerSwordAttack
 --- !u!1 &1171635314
 GameObject:
   m_ObjectHideFlags: 0
@@ -4984,7 +4979,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2890340462180134544, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
       insertIndex: -1
       addedObject: {fileID: 349358917}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1206010168}
   m_SourcePrefab: {fileID: 100100000, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
 --- !u!4 &1206010165 stripped
 Transform:
@@ -4996,6 +4994,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2890340462180134544, guid: 9c896de4f87a2dd48aad71aa440e8e03, type: 3}
   m_PrefabInstance: {fileID: 1206010164}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1206010168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316020709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8beecc8c42d465242a859848c6c268f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSwordAttack
+  _katanaCollider: {fileID: 2016263028}
 --- !u!1 &1213549346
 GameObject:
   m_ObjectHideFlags: 0
@@ -7185,6 +7196,102 @@ Transform:
   m_Children: []
   m_Father: {fileID: 74350580}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2016263026
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2016263027}
+  - component: {fileID: 2016263028}
+  - component: {fileID: 2016263029}
+  - component: {fileID: 2016263030}
+  m_Layer: 2
+  m_Name: Blade
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2016263027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016263026}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.9283248, z: -0.00000011920925, w: 0.37177008}
+  m_LocalPosition: {x: 0.121, y: 0, z: -0.128}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 349358917}
+  m_LocalEulerAnglesHint: {x: 0, y: 136.35, z: 0}
+--- !u!65 &2016263028
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016263026}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 0.08, y: 0.08, z: 1.05}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &2016263029
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016263026}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &2016263030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016263026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8aaba4a413aa924f8078d20d67bbe07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Katana
+  _player: {fileID: 1167947697}
+  _damage: 25
 --- !u!1 &2031615535
 GameObject:
   m_ObjectHideFlags: 0
