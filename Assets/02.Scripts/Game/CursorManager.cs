@@ -54,11 +54,11 @@ public class CursorManager : MonoBehaviour
     {
         IsUiCursor = false;
 
-        // 쿼터뷰와 탑다운은 마우스 커서로 조준하므로 커서를 보이게 두고 화면 밖으로 나가지 않게만 한다.
+        // 쿼터뷰와 탑다운은 마우스 커서로 조준하므로 화면 밖으로 나가지 않게만 하고, 커서 자리에는 조준점(UI_Crosshair)이 따라다닌다.
         bool isCursorAim = CameraManager.Instance != null && CameraManager.Instance.IsCursorAim;
 
         Cursor.lockState = isCursorAim ? CursorLockMode.Confined : CursorLockMode.Locked; // 마우스 커서를 화면 가운데에 고정
-        Cursor.visible = isCursorAim;
+        Cursor.visible = false;
     }
 
     public void UnLockCursor()

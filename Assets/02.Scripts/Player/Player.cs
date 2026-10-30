@@ -9,6 +9,8 @@ public class Player : MonoBehaviour, IDamageable
     private int _injuredLayerIndex;
     private int _swordLayerIndex;
 
+    [SerializeField] private GameObject _katana; // 검 모드일 때만 손에 보이는 검 모델
+
     private WeaponMode _weaponMode = WeaponMode.Normal;
     public WeaponMode WeaponMode => _weaponMode;
 
@@ -21,6 +23,8 @@ public class Player : MonoBehaviour, IDamageable
         _animator = GetComponentInChildren<Animator>();
         _injuredLayerIndex = _animator.GetLayerIndex("Injured Layer");
         _swordLayerIndex = _animator.GetLayerIndex("Sword Layer");
+
+        ApplySwordVisual();
     }
 
     public void TakeDamage(DamageInfo damageInfo)
@@ -68,9 +72,17 @@ public class Player : MonoBehaviour, IDamageable
 
         _weaponMode = mode;
 
-        // 검 모드일 때만 검 자세와 공격(Sword Layer의 Idle, Attack)을 켠다.
-        _animator.SetLayerWeight(_swordLayerIndex, mode == WeaponMode.Sword ? 1f : 0f);
+        ApplySwordVisual();
 
         OnWeaponModeChanged?.Invoke();
+    }
+
+    // 검 모드일 때만 검 자세와 공격(Sword Layer의 Idle, Attack)을 켜고, 검 모델도 그때만 보인다.
+    private void ApplySwordVisual()
+    {
+        bool isSword = _weaponMode == WeaponMode.Sword;
+
+        _animator.SetLayerWeight(_swordLayerIndex, isSword ? 1f : 0f);
+        _katana.SetActive(isSword);
     }
 }

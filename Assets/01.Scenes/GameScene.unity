@@ -415,6 +415,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139501787}
   m_CullTransparentMesh: 1
+--- !u!1 &141992353 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a6dc34012ba06f343b16b25d7743bfa4, type: 3}
+  m_PrefabInstance: {fileID: 349358916}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &159552271
 GameObject:
   m_ObjectHideFlags: 0
@@ -1458,7 +1463,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.25
+  near clip plane: 0.2
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -1891,6 +1896,7 @@ GameObject:
   - component: {fileID: 410850060}
   - component: {fileID: 410850062}
   - component: {fileID: 410850061}
+  - component: {fileID: 410850063}
   m_Layer: 5
   m_Name: CrossHair
   m_TagString: Untagged
@@ -1955,6 +1961,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410850059}
   m_CullTransparentMesh: 1
+--- !u!114 &410850063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410850059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b25eccc148ec8a340b7c68110c0239d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Crosshair
 --- !u!1001 &426317845
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4687,6 +4705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 153dcf30a342db948a06d6e52b1fe3ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  _katana: {fileID: 141992353}
 --- !u!114 &1167947698
 MonoBehaviour:
   m_ObjectHideFlags: 0
