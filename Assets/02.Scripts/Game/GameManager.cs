@@ -11,28 +11,14 @@ public enum GameState
     GameOver
 }
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingletonBehaviour<GameManager>
 {
-    private static GameManager _instance = null;
-    public static GameManager Instance => _instance;
-
     private GameState _state = GameState.Ready;
     public GameState State => _state;
 
     [SerializeField] private TextMeshProUGUI _stateText;
     [SerializeField] private GameObject _optionPopup;
     [SerializeField] private Animator _playerAnimator;
-
-    private void Awake()
-    {
-        if (_instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        _instance = this;
-    }
 
     private void Start()
     {
