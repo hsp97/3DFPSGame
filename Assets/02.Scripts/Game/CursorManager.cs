@@ -3,11 +3,21 @@ using UnityEngine;
 
 public class CursorManager : MonoBehaviour
 {
+    private static CursorManager _instance = null;
+    public static CursorManager Instance => _instance;
     // Left Alt로 UI를 조작하는 중인지. 이때는 사격과 공격을 하지 않는다.
     public static bool IsUiCursor { get; private set; }
 
     private void Awake()
     {
+        if (_instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
+
         IsUiCursor = false;
         LockCursor();
     }
