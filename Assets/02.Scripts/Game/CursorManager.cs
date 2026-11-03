@@ -17,6 +17,7 @@ public class CursorManager : SingletonBehaviour<CursorManager>
     private void Start()
     {
         CameraManager.Instance.OnViewChanged += RefreshCursor;
+        GameManager.Instance.OnStateChanged += OnGameStateChanged;
         RefreshCursor();
     }
 
@@ -25,6 +26,24 @@ public class CursorManager : SingletonBehaviour<CursorManager>
         if (CameraManager.Instance != null)
         {
             CameraManager.Instance.OnViewChanged -= RefreshCursor;
+        }
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnStateChanged -= OnGameStateChanged;
+        }
+    }
+
+    // 일시정지/게임 오버 팝업의 버튼을 누를 수 있게 커서를 풀고, 게임으로 돌아오면 다시 잠근다.
+    private void OnGameStateChanged(GameState state)
+    {
+        if (state == GameState.Pause || state == GameState.GameOver)
+        {
+            UnLockCursor();
+        }
+        else if (state == GameState.Playing)
+        {
+            LockCursor();
         }
     }
 

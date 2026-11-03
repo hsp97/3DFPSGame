@@ -17,16 +17,21 @@ public class GameManager : SingletonBehaviour<GameManager>
     private GameState _state = GameState.Ready;
     public GameState State => _state;
 
+    // 게임 상태가 바뀔 때 알린다. 팝업 등 상태에 따른 UI는 UI_GameState가 처리한다.
+    public event Action<GameState> OnStateChanged;
+
     [SerializeField] private TextMeshProUGUI _stateText;
-    [SerializeField] private GameObject _optionPopup;
-    [SerializeField] private GameObject _gameOverPopup;
     [SerializeField] private Animator _playerAnimator;
 
     private void Start()
     {
-        _optionPopup.SetActive(false);
-        _gameOverPopup.SetActive(false);
         StartCoroutine(StartSequence_Coroutine());
+    }
+
+    private void ChangeState(GameState state)
+    {
+        _state = state;
+        OnStateChanged?.Invoke(_state);
     }
 
     private void Update()
@@ -35,10 +40,8 @@ public class GameManager : SingletonBehaviour<GameManager>
         {
             if (_state == GameState.Playing)
             {
-                _state = GameState.Pause;
+                ChangeState(GameState.Pause);
                 Time.timeScale = 0f;    // 유니티에서 흐르는 시간
-                _optionPopup.SetActive(true);
-                CursorManager.Instance.UnLockCursor();
             }
             else if (_state == GameState.Pause)
             {
@@ -56,16 +59,14 @@ public class GameManager : SingletonBehaviour<GameManager>
         _stateText.text = "시작";
         yield return new WaitForSeconds(0.5f);
         _stateText.gameObject.SetActive(false);
-        _state = GameState.Playing;
+        ChangeState(GameState.Playing);
     }
 
     // 계속하기
     public void Resume()
     {
-        _state = GameState.Playing;
+        ChangeState(GameState.Playing);
         Time.timeScale = 1f;
-        _optionPopup.SetActive(false);
-        CursorManager.Instance.LockCursor();
     }
 
     // 다시하기
@@ -87,11 +88,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public void GameOver()
     {
-        _state = GameState.GameOver;
+        ChangeState(GameState.GameOver);
         _playerAnimator.SetFloat("MoveMotion", 0f);
-
-        // 게임 오버 팝업을 띄우고 버튼을 누를 수 있게 커서를 푼다.
-        _gameOverPopup.SetActive(true);
-        CursorManager.Instance.UnLockCursor();
     }
 }
