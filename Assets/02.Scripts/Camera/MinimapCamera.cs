@@ -17,7 +17,11 @@ public class MinimapCamera : MonoBehaviour
     [SerializeField] private float _minSize = 3f; // 최대로 확대했을 때 크기
     [SerializeField] private float _maxSize = 20f; // 최대로 축소했을 때 크기
 
+    [Header("갱신")]
+    [SerializeField] private float _renderInterval = 1f / 15f; // 미니맵을 다시 그리는 간격(초)
+
     private Camera _camera;
+    private float _renderTimer;
 
     private void Awake()
     {
@@ -29,6 +33,10 @@ public class MinimapCamera : MonoBehaviour
 
         _instance = this;
         _camera = GetComponent<Camera>();
+
+        // 매 프레임 자동으로 그리지 않고, LateUpdate에서 정해진 간격마다 직접 그린다.
+        _camera.enabled = false;
+        _renderTimer = _renderInterval; // 첫 프레임에 바로 한 번 그린다.
     }
 
     private void OnDestroy()
@@ -62,6 +70,13 @@ public class MinimapCamera : MonoBehaviour
 
         // 2. 아래를 보되, 대상이 쳐다보는 방향으로 카메라도 회전한다.
         transform.eulerAngles = new Vector3(90f, _target.eulerAngles.y, 0f);
+
+        // 3. 정해진 간격이 지났을 때만 미니맵을 다시 그린다.
+        _renderTimer += Time.unscaledDeltaTime;
+        if (_renderTimer < _renderInterval) return;
+
+        _renderTimer = 0f;
+        _camera.Render();
     }
 
     public void ZoomIn()
@@ -78,5 +93,6 @@ public class MinimapCamera : MonoBehaviour
     private void SetZoom(float size)
     {
         _camera.orthographicSize = Mathf.Clamp(size, _minSize, _maxSize);
+        _renderTimer = _renderInterval; // 줌을 바꾸면 다음 LateUpdate에서 바로 다시 그린다.
     }
 }
