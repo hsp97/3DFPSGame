@@ -1,0 +1,73 @@
+scenario,metric,median,average
+before_spawn,PlayerLoop,3.696,3.802
+before_spawn,Inl_UniversalRenderTotal,2.113,2.150
+before_spawn,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera,0.889,0.904
+before_spawn,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: MinimapCamera,0.524,0.551
+before_spawn,CullScriptable,0.434,0.447
+before_spawn,WaitForJobGroupID,0.825,0.833
+before_spawn,GPU Frame Time,8.330,7.041
+before_spawn,CPU Main Thread Frame Time,3.695,3.733
+before_spawn,CPU Render Thread Frame Time,2.932,2.981
+before_spawn,Batches Count,299.000,302.306
+before_spawn,SetPass Calls Count,87.000,86.666
+before_spawn,Triangles Count,3301505.000,3285357.890
+before_spawn,Vertices Count,2664245.000,2653578.311
+before_spawn,Shadow Casters Count,117.000,117.580
+before_spawn,Texture Memory,1531.840,1531.840
+before_spawn,Mesh Memory,149.476,149.477
+before_spawn,Render Textures Bytes,313.109,313.109
+before_spawn,Total Used Memory,4989.341,5074.429
+after_spawn,PlayerLoop,2.837,3.102
+after_spawn,Inl_UniversalRenderTotal,1.269,1.405
+after_spawn,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera,0.844,0.868
+after_spawn,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: MinimapCamera,0.000,0.095
+after_spawn,CullScriptable,0.282,0.307
+after_spawn,WaitForJobGroupID,0.732,0.775
+after_spawn,GPU Frame Time,7.988,6.732
+after_spawn,CPU Main Thread Frame Time,2.813,2.966
+after_spawn,CPU Render Thread Frame Time,2.287,2.519
+after_spawn,Batches Count,134.000,168.903
+after_spawn,SetPass Calls Count,57.000,60.402
+after_spawn,Triangles Count,1076938.000,1108709.526
+after_spawn,Vertices Count,793049.000,858830.913
+after_spawn,Shadow Casters Count,2.000,3.731
+after_spawn,Texture Memory,1528.279,1528.279
+after_spawn,Mesh Memory,149.476,149.477
+after_spawn,Render Textures Bytes,309.109,309.109
+after_spawn,Total Used Memory,4638.790,4653.900
+before_tunnel,PlayerLoop,4.471,4.691
+before_tunnel,Inl_UniversalRenderTotal,2.484,2.537
+before_tunnel,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera,1.038,1.073
+before_tunnel,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: MinimapCamera,0.533,0.548
+before_tunnel,CullScriptable,0.384,0.393
+before_tunnel,WaitForJobGroupID,1.049,1.076
+before_tunnel,GPU Frame Time,8.253,7.133
+before_tunnel,CPU Main Thread Frame Time,4.468,4.538
+before_tunnel,CPU Render Thread Frame Time,2.975,3.212
+before_tunnel,Batches Count,202.000,236.186
+before_tunnel,SetPass Calls Count,93.000,93.510
+before_tunnel,Triangles Count,3649366.000,3649735.796
+before_tunnel,Vertices Count,2921479.000,2921951.311
+before_tunnel,Shadow Casters Count,143.000,142.933
+before_tunnel,Texture Memory,1552.022,1552.023
+before_tunnel,Mesh Memory,149.476,149.476
+before_tunnel,Render Textures Bytes,313.109,313.109
+before_tunnel,Total Used Memory,5330.652,5447.090
+after_tunnel,PlayerLoop,3.241,3.408
+after_tunnel,Inl_UniversalRenderTotal,1.299,1.411
+after_tunnel,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera,0.861,0.880
+after_tunnel,Inl_UniversalRenderPipeline.RenderSingleCameraInternal: MinimapCamera,0.000,0.095
+after_tunnel,CullScriptable,0.210,0.232
+after_tunnel,WaitForJobGroupID,0.937,0.967
+after_tunnel,GPU Frame Time,8.444,7.250
+after_tunnel,CPU Main Thread Frame Time,3.240,3.399
+after_tunnel,CPU Render Thread Frame Time,2.390,2.495
+after_tunnel,Batches Count,63.000,81.485
+after_tunnel,SetPass Calls Count,50.000,53.551
+after_tunnel,Triangles Count,1003986.000,1028607.671
+after_tunnel,Vertices Count,729458.000,791022.276
+after_tunnel,Shadow Casters Count,0.000,2.805
+after_tunnel,Texture Memory,1528.279,1528.251
+after_tunnel,Mesh Memory,149.476,149.477
+after_tunnel,Render Textures Bytes,309.109,309.107
+after_tunnel,Total Used Memory,4813.941,4851.057

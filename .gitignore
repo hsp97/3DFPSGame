@@ -17,11 +17,16 @@
 /[Mm]emoryCaptures/
 
 # Recordings can get excessive in size
-# 프로파일링 캡처 이미지(png)만 커밋하고 원본 .data 등은 제외한다
+# 프로파일링 캡처 이미지(png)와 비교 문서(md, csv)만 커밋하고 원본 .data 등은 제외한다
 /[Rr]ecordings/*
 !/[Rr]ecordings/Profiling/
 /[Rr]ecordings/Profiling/*
 !/[Rr]ecordings/Profiling/*.png
+!/[Rr]ecordings/Profiling/BeforeAfter/
+/[Rr]ecordings/Profiling/BeforeAfter/*
+!/[Rr]ecordings/Profiling/BeforeAfter/*.png
+!/[Rr]ecordings/Profiling/BeforeAfter/*.md
+!/[Rr]ecordings/Profiling/BeforeAfter/*.csv
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
