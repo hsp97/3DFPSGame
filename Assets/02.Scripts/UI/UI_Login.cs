@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// 로그인 화면. 로그인 패널과 회원가입 패널을 바꾸고, 입력을 확인해 AccountStorage에 부탁한다.
+// 로그인 화면. 로그인 패널과 회원가입 패널을 바꾸고, 입력을 확인해 계정 저장소에 부탁한다.
 public class UI_Login : MonoBehaviour
 {
     [Header("패널")]
@@ -28,6 +28,8 @@ public class UI_Login : MonoBehaviour
     [Header("기타")]
     [SerializeField] private string _gameSceneName = "GameScene";  // 로그인하면 불러올 씬
 
+    private readonly PlayerPrefsAccountRepository _accountRepository = new PlayerPrefsAccountRepository();
+
     private void Start()
     {
         _loginButton.onClick.AddListener(Login);
@@ -49,7 +51,7 @@ public class UI_Login : MonoBehaviour
             return;
         }
 
-        if (!AccountStorage.CheckPassword(id, password))
+        if (!_accountRepository.CheckPassword(id, password))
         {
             // 아이디가 없는지 비밀번호가 틀렸는지는 알려 주지 않는다.
             _loginMessageText.text = "아이디 또는 비밀번호가 맞지 않습니다.";
@@ -86,19 +88,31 @@ public class UI_Login : MonoBehaviour
             return;
         }
 
+        if (!AccountRule.IsValidId(id))
+        {
+            _registerMessageText.text = "아이디는 이메일 형식으로 입력해 주세요.";
+            return;
+        }
+
+        if (!AccountRule.IsValidPassword(password))
+        {
+            _registerMessageText.text = "비밀번호는 영문 7~15 글자이며 대문자와 특수문자를 하나 이상 포함해야 합니다.";
+            return;
+        }
+
         if (password != passwordConfirm)
         {
             _registerMessageText.text = "비밀번호 확인이 맞지 않습니다.";
             return;
         }
 
-        if (AccountStorage.Exists(id))
+        if (_accountRepository.Exists(id))
         {
             _registerMessageText.text = "이미 있는 아이디입니다.";
             return;
         }
 
-        AccountStorage.Register(id, password);
+        _accountRepository.Register(id, password);
         GotoLogin();
         _idInput.text = id;
         _loginMessageText.text = "가입했습니다. 로그인해 주세요.";
