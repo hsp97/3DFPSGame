@@ -88,15 +88,15 @@ public class UI_Login : MonoBehaviour
             return;
         }
 
-        if (!AccountRule.IsValidId(id))
+        if (!AccountIdSpecification.IsValidId(id))
         {
-            _registerMessageText.text = "아이디는 이메일 형식으로 입력해 주세요.";
+            _registerMessageText.text = AccountIdSpecification.ErrorMessage;
             return;
         }
 
-        if (!AccountRule.IsValidPassword(password))
+        if (!AccountPasswordSpecification.IsValidPassword(password))
         {
-            _registerMessageText.text = "비밀번호는 영문 7~15 글자이며 대문자와 특수문자를 하나 이상 포함해야 합니다.";
+            _registerMessageText.text = AccountPasswordSpecification.ErrorMessage;
             return;
         }
 
