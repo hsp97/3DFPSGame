@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 // 로그인 화면. 로그인 패널과 회원가입 패널을 바꾸고, 입력을 확인해 계정 저장소에 부탁한다.
@@ -39,7 +38,7 @@ public class UI_Login : MonoBehaviour
         GotoLogin();
     }
 
-    // 로그인: 입력을 확인하고, 맞으면 게임 씬을 불러온다.
+    // 로그인: 입력을 확인하고, 맞으면 로딩 씬을 불러온다.
     private void Login()
     {
         string id = _idInput.text;
@@ -58,7 +57,7 @@ public class UI_Login : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene(_gameSceneName);
+        SceneLoader.Load(_gameSceneName);
     }
 
     private void GotoRegister()
@@ -117,4 +116,5 @@ public class UI_Login : MonoBehaviour
         _idInput.text = id;
         _loginMessageText.text = "가입했습니다. 로그인해 주세요.";
     }
+
 }
